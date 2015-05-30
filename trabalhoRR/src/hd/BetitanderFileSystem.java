@@ -44,6 +44,9 @@ public class BetitanderFileSystem {
         }
         System.out.println(vHD[0]);
         // Criar a pasta raiz byte 128
+        // 
+        // Gabriel faz o codigo aqui que tem que criar pasta raiz.
+        //
 
         FileWriter formatar = new FileWriter(this.hd);
         for (int i = 0; i < this.tamHD; i++) {
