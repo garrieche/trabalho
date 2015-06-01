@@ -15,7 +15,7 @@ public class Bits {
 	public static char pegabit(char c, char b)
 	{	return(((c&(1<<b)) == 0)?(char)0:(char)1);
 	}
-
+        //             3        byte          0 ou 1
 	//mudar do bit b do char c para o valor v
 	public static char mudabit(char c, char b, char v)
 	{	return((char)((v == 1)?c|(1<<b):c&(~(1<<b))));

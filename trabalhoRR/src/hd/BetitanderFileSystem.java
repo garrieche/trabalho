@@ -5,6 +5,7 @@
  */
 package hd;
 
+import static hd.Bits.mudabit;
 import static hd.Bits.pegabit;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,7 +31,6 @@ public class BetitanderFileSystem {
             hd.createNewFile();
             formatar();
         }
-
     }
 
     void formatar() throws IOException {
@@ -50,23 +50,47 @@ public class BetitanderFileSystem {
             formatar.write(vHD[i]);
         }
         formatar.flush();
-
     }
 
     int getBlocoVazio() throws FileNotFoundException, IOException {
-         RandomAccessFile arq = new RandomAccessFile(hd, "r");
+        RandomAccessFile arq = new RandomAccessFile(hd, "r");
         for (int i = 0; i < 128; i++) {
             arq.seek(i);
             char b = arq.readChar();
             for (int j = 0; j < 8; j++) {
                 if (pegabit(b, (char) j) == '0') {
-                    return (j * 18) + 128;
+                    return ((i * 8) + j); //numero real do bloco do BLOCO não do byte
                 }
-
             }
         }
         return Integer.MAX_VALUE;
     }
-    
-}
 
+    void setarBlocoUsado(int bloco) throws IOException {
+        RandomAccessFile arq = new RandomAccessFile(hd, "r");
+        int numByte = (int) bloco / 8;
+        int numBitnoByte = bloco % 8;
+        arq.seek(numByte);
+        char b = arq.readChar();
+        mudabit((char) numBitnoByte, b, (char) 1);
+    }
+
+    void setBlocoLivre(int bloco) throws IOException {
+        RandomAccessFile arq = new RandomAccessFile(hd, "r");
+        int numByte = (int) bloco / 8;
+        int numBitnoByte = bloco % 8;
+        arq.seek(numByte);
+        char b = arq.readChar();
+        mudabit((char) numBitnoByte, b, (char) 0);
+    }
+
+    void gravarBloco(int bloco, char dados[]) throws IOException {
+        
+        this.setarBlocoUsado(bloco);
+        RandomAccessFile arq = new RandomAccessFile(hd, "r");
+        int numByte = (int) bloco / 8;
+        int numBitnoByte = bloco % 8;
+        arq.seek((bloco*18)+128); //dessa forma chega no byte apropriado
+        arq.write(dados); //grava os 16 chars        
+    }
+}
