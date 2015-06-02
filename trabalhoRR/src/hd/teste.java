@@ -10,18 +10,12 @@ package hd;
  * @author Jair
  */
 public class teste {
-    public static void main( String args[]){
-        char x = 21 ;
-        
-        
-        System.out.println("");    
-        
-        
+
+    public static void main(String args[]) {
+        String teste = "/1/2/3";
+        System.out.println(teste);
+        for (int i = 0; i < teste.length(); i++) {
+            System.out.println(teste.substring(1, i));
+        }
     }
-    
-    
-    
-    private static char xpegabit( char c, char b ){
-        return (((c&(1<<b))==0)?(char)0:(char)1);
-    } 
 }

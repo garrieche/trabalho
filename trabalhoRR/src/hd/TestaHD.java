@@ -8,7 +8,7 @@ public class TestaHD {
         discoC.formatar();
         //discoC.MostraHD();
         
-       System.out.println(discoC.getBlocoVazio() + " e o proximo bloco vazio");
+      // System.out.println(discoC.getBlocoVazio() + " e o proximo bloco vazio");
        
         System.out.println(" testou ok ");
        
