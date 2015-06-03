@@ -33,12 +33,20 @@ public class BetitanderFileSystem {
     }
 
     public void formatar() throws IOException {
-        for (int i = 1; i < 128; i++) vHD[i] = 0;
-        for (int i = 129; i < this.tamHD; i++) this.vHD[i] = 15;
+        for (int i = 1; i < 128; i++) {
+            vHD[i] = 0;
+        }
+        for (int i = 129; i < this.tamHD; i++) {
+            this.vHD[i] = 15;
+        }
         vHD[0] = (byte) 10000000;
-        for (int i = 128; i < 128 + 18; i++) this.vHD[i] = folder()[i-128];
-        RandomAccessFile formatar = new RandomAccessFile( hd, "rw");
-        for (int i = 0; i < this.tamHD; i++)formatar.writeByte(vHD[i]);
+        for (int i = 128; i < 128 + 18; i++) {
+            this.vHD[i] = folder()[i - 128];
+        }
+        RandomAccessFile formatar = new RandomAccessFile(hd, "rw");
+        for (int i = 0; i < this.tamHD; i++) {
+            formatar.writeByte(vHD[i]);
+        }
         formatar.close();
     }
 
@@ -52,91 +60,151 @@ public class BetitanderFileSystem {
         arq.close();
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    public boolean criaPasta( String caminho) {
+
+    public boolean criaPasta(String caminho) {
         byte[] umaPasta = folder();
-        
         return true;
     }
     
+    public boolean criaArquivo(String caminho, byte[] binario){
+        return true;
+    }
+    
+    public boolean apagaPasta( String caminho) {
+        // apenas se a pasta estiver vazia
+        return true ;
+    }
     
     
+    public boolean apagaArquivo ( String caminho) {
+        return true ;
+    }
     
     
-    
-    
-    private static String xBinario( char valor ){
+
+    private static String xBinario(char valor) {
         String ret = "";
-        for (int i = 0; i < 8; i++){
-            ret = String.valueOf((int)pegabit(valor , (char)i)) + ret ;
+        for (int i = 0; i < 8; i++) {
+            ret = String.valueOf((int) pegabit(valor, (char) i)) + ret;
         }
         return (ret);
     }
-    
+
     private short getBlocoVazio() throws FileNotFoundException, IOException {
         RandomAccessFile arq = new RandomAccessFile(hd, "r");
         for (int i = 0; i < 128; i++) {
-            short bitsAnteriores = (short)((i)*8);
+            short bitsAnteriores = (short) ((i) * 8);
             arq.seek(i);
-            char b = (char)arq.readUnsignedByte();
+            char b = (char) arq.readUnsignedByte();
             for (char j = 0; j < 7; j++) {
-                if ( (int)xpegabit(b , j)== 0 )
-                      return (short) ( bitsAnteriores + (j));
+                if ((int) xpegabit(b, j) == 0) {
+                    return (short) (bitsAnteriores + (j));
+                }
             }
         }
         arq.close();
         return 0;
     }
 
-    private static byte[] folder(){
+    private static byte[] folder() {
         byte[] folder = new byte[18];
-        
+
     // =====================================================
-    // Arquivo 1
-    // =====================================================    
-        
+        // Arquivo 1
+        // =====================================================    
         folder[0] = 0;                   //  2 bytes
         folder[1] = 0;                   //  para bloco inicio  (0 = vazio ) 
         folder[2] = (byte) 10000000;     //  1 Byte para Arquivo / Pasta e Seguranca
         folder[3] = 0;                   //  1 byte para nome do Arquivo
-    
+
     // =====================================================
-    // Arquivo 2
-    // =====================================================      
-        
-        folder[4] = 0;                  
-        folder[5] = 0;    
-        folder[6] = (byte) 10000000;   
-        folder[7] = 0;     
-       
+        // Arquivo 2
+        // =====================================================      
+        folder[4] = 0;
+        folder[5] = 0;
+        folder[6] = (byte) 10000000;
+        folder[7] = 0;
+
     // =====================================================
-    // Arquivo 3
-    // =====================================================      
-        
-        folder[8] = 0;     
-        folder[9] = 0;     
-        folder[10] = (byte) 10000000;    
-        folder[11] = 0;    
-    
+        // Arquivo 3
+        // =====================================================      
+        folder[8] = 0;
+        folder[9] = 0;
+        folder[10] = (byte) 10000000;
+        folder[11] = 0;
+
     // =====================================================
-    // Arquivo 4
-    // =====================================================  
-        
-        folder[12] = 0;    
-        folder[13] = 0;    
+        // Arquivo 4
+        // =====================================================  
+        folder[12] = 0;
+        folder[13] = 0;
         folder[14] = (byte) 10000000;
-        folder[15] = 0;    
-    
+        folder[15] = 0;
+
     // =====================================================
-    // Continuação da pasta em outros blocos
-    // =====================================================      
-        
-        folder[16] = 0;    
-        folder[17] = 0;     
-    
+        // Continuação da pasta em outros blocos
+        // =====================================================      
+        folder[16] = 0;
+        folder[17] = 0;
+
         return folder;
     }
-   
+    
+    private short exist(String caminho) throws FileNotFoundException, IOException {
+        
+        if (caminho == null) return 0 ;
+        if (caminho.length()==1 && caminho.charAt(0) != '/') return 0 ;
+        if (caminho.length()==1 && caminho.charAt(0) == '/') return 128;
+        
+        byte[] umBloco = new byte[18];
+        String tempPath = "";
+        RandomAccessFile path = new RandomAccessFile(hd, "r");
+        path.seek(128);
+        path.read(umBloco);
+        for (int i = 0; i < caminho.length(); i++) {
+            if (caminho.charAt(i) == '/' || i == caminho.length()) {
+                System.out.println(tempPath);
+                
+                
+                
+                //aqui procura o bloco da proxima desta pasta
+                tempPath = "";
+               
+            }else {
+                tempPath = tempPath + caminho.charAt(i);
+                
+            }
+            //System.out.println(temp);  
+        }
+        for (int i = 1; i < caminho.length(); i++) {
+            if(caminho.charAt(i) == '/') break;
+        }
+        
+        String teste = caminho;
+        System.out.println("Caminho Recebido ->  " + teste);
+        
+        
+        path.seek(128);                 // Posicao do Raiz
+        path.read(umBloco);
+        String temp = "";
+        for (int i = 0; i < teste.length(); i++) {
+            temp = temp + teste.charAt(i);
+            if (teste.charAt(i) == '/') {
+                if (temp.length() == 1){            // Raiz "/"
+                    
+                    
+                    
+                } else {
+                    
+                }
+                System.out.println(temp);
+                temp = "";
+            }
+        }
+        System.out.println(temp);
+        return (0);
+    }
+
 }
 
 //    void setBlocoUsado(int bloco) throws IOException {
