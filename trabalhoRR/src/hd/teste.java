@@ -5,14 +5,16 @@
  */
 package hd;
 
+import java.io.IOException;
+
 /**
  *
  * @author Jair
  */
 public class teste {
 
-    public static void main(String args[]) {
-        String teste = "/12/2/3/4/5";
+    public static void main(String args[]) throws IOException {
+        String teste = "/1";
         System.out.println(teste);
         //System.out.println(teste.substring(0,0));
         //System.out.println("" + teste.charAt(0));
@@ -55,5 +57,8 @@ public class teste {
             //
         }
         System.out.println(temp);  
+        BetitanderFileSystem b = new BetitanderFileSystem();
+        b.criaPasta(teste);
+        
     }
 }

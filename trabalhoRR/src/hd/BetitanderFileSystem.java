@@ -5,6 +5,7 @@
  */
 package hd;
 
+import static hd.Bits.mudabit;
 import static hd.Bits.pegabit;
 import static hd.Bits.xpegabit;
 import java.io.File;
@@ -62,26 +63,60 @@ public class BetitanderFileSystem {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public boolean criaPasta(String caminho) {
+    public boolean criaPasta(String caminho) throws IOException {
+        int blocoVazio;
+        int pastaOndeCriaNova;
+        byte[] umBloco = new byte[18];
         byte[] umaPasta = folder();
+        blocoVazio = this.getBlocoVazio();
+        
+        String nomePasta = "";
+        for (int i = 0; i < caminho.length(); i++) {
+            if (caminho.charAt(i) == '/' || i == caminho.length()) {
+                nomePasta = "";
+            } else {
+                nomePasta = nomePasta + caminho.charAt(i);
+            }
+        }
+        int tmp = Integer.getInteger(nomePasta);
+        //tratar o nome do caminho
+
+        pastaOndeCriaNova = this.exist(caminho);
+        System.out.println("vou criar a pasta nos seguintes parametros:");
+        System.out.println("Bloco Vazio -> " + blocoVazio);
+        System.out.println("pastaOndeCriaNova -> " + pastaOndeCriaNova);
+        System.out.println("nome da pasta em String -> " + nomePasta + "nome INT -> " + tmp + "nome em bytes -> " + ((byte) tmp));
+//        if (pastaOndeCriaNova != 0) {
+//            this.setBlocoUsado(blocoVazio);
+//            RandomAccessFile path = new RandomAccessFile(hd, "r");
+//            path.seek(pastaOndeCriaNova);
+//            path.read(umBloco);
+//
+//            //tratar posicao na pasta
+//            //tratar gravar nome
+//            umBloco[0] = (byte) blocoVazio;
+//            
+//            umBloco[3] = (byte) tmp;
+//            path.seek(blocoVazio);
+//            path.write(umaPasta);
+//        }
+//        //onde?
+//
         return true;
     }
-    
-    public boolean criaArquivo(String caminho, byte[] binario){
+
+    public boolean criaArquivo(String caminho, byte[] binario) {
         return true;
     }
-    
-    public boolean apagaPasta( String caminho) {
+
+    public boolean apagaPasta(String caminho) {
         // apenas se a pasta estiver vazia
-        return true ;
+        return true;
     }
-    
-    
-    public boolean apagaArquivo ( String caminho) {
-        return true ;
+
+    public boolean apagaArquivo(String caminho) {
+        return true;
     }
-    
-    
 
     private static String xBinario(char valor) {
         String ret = "";
@@ -110,7 +145,7 @@ public class BetitanderFileSystem {
     private static byte[] folder() {
         byte[] folder = new byte[18];
 
-    // =====================================================
+        // =====================================================
         // Arquivo 1
         // =====================================================    
         folder[0] = 0;                   //  2 bytes
@@ -118,7 +153,7 @@ public class BetitanderFileSystem {
         folder[2] = (byte) 10000000;     //  1 Byte para Arquivo / Pasta e Seguranca
         folder[3] = 0;                   //  1 byte para nome do Arquivo
 
-    // =====================================================
+        // =====================================================
         // Arquivo 2
         // =====================================================      
         folder[4] = 0;
@@ -126,7 +161,7 @@ public class BetitanderFileSystem {
         folder[6] = (byte) 10000000;
         folder[7] = 0;
 
-    // =====================================================
+        // =====================================================
         // Arquivo 3
         // =====================================================      
         folder[8] = 0;
@@ -134,7 +169,7 @@ public class BetitanderFileSystem {
         folder[10] = (byte) 10000000;
         folder[11] = 0;
 
-    // =====================================================
+        // =====================================================
         // Arquivo 4
         // =====================================================  
         folder[12] = 0;
@@ -142,7 +177,7 @@ public class BetitanderFileSystem {
         folder[14] = (byte) 10000000;
         folder[15] = 0;
 
-    // =====================================================
+        // =====================================================
         // Continuação da pasta em outros blocos
         // =====================================================      
         folder[16] = 0;
@@ -150,13 +185,19 @@ public class BetitanderFileSystem {
 
         return folder;
     }
-    
+
     private short exist(String caminho) throws FileNotFoundException, IOException {
-        
-        if (caminho == null) return 0 ;
-        if (caminho.length()==1 && caminho.charAt(0) != '/') return 0 ;
-        if (caminho.length()==1 && caminho.charAt(0) == '/') return 128;
-        
+
+        if (caminho == null) {
+            return 0;
+        }
+        if (caminho.length() == 1 && caminho.charAt(0) != '/') {
+            return 0;
+        }
+        if (caminho.length() == 1 && caminho.charAt(0) == '/') {
+            return 128;
+        }
+
         byte[] umBloco = new byte[18];
         String tempPath = "";
         RandomAccessFile path = new RandomAccessFile(hd, "r");
@@ -165,38 +206,35 @@ public class BetitanderFileSystem {
         for (int i = 0; i < caminho.length(); i++) {
             if (caminho.charAt(i) == '/' || i == caminho.length()) {
                 System.out.println(tempPath);
-                
-                
-                
+
                 //aqui procura o bloco da proxima desta pasta
                 tempPath = "";
-               
-            }else {
+
+            } else {
                 tempPath = tempPath + caminho.charAt(i);
-                
+
             }
             //System.out.println(temp);  
         }
         for (int i = 1; i < caminho.length(); i++) {
-            if(caminho.charAt(i) == '/') break;
+            if (caminho.charAt(i) == '/') {
+                break;
+            }
         }
-        
+
         String teste = caminho;
         System.out.println("Caminho Recebido ->  " + teste);
-        
-        
+
         path.seek(128);                 // Posicao do Raiz
         path.read(umBloco);
         String temp = "";
         for (int i = 0; i < teste.length(); i++) {
             temp = temp + teste.charAt(i);
             if (teste.charAt(i) == '/') {
-                if (temp.length() == 1){            // Raiz "/"
-                    
-                    
-                    
+                if (temp.length() == 1) {            // Raiz "/"
+
                 } else {
-                    
+
                 }
                 System.out.println(temp);
                 temp = "";
@@ -206,16 +244,16 @@ public class BetitanderFileSystem {
         return (0);
     }
 
+    void setBlocoUsado(int bloco) throws IOException {
+        RandomAccessFile arq = new RandomAccessFile(hd, "r");
+        int numByte = (int) bloco / 8;
+        int numBitnoByte = bloco % 8;
+        arq.seek(numByte);
+        char b = arq.readChar();
+        mudabit((char) numBitnoByte, b, (char) 1);
+    }
 }
 
-//    void setBlocoUsado(int bloco) throws IOException {
-//        RandomAccessFile arq = new RandomAccessFile(hd, "r");
-//        int numByte = (int) bloco / 8;
-//        int numBitnoByte = bloco % 8;
-//        arq.seek(numByte);
-//        char b = arq.readChar();
-//        mudabit((char) numBitnoByte, b, (char) 1);
-//    }
 //    void setBlocoLivre(int bloco) throws IOException {
 //        RandomAccessFile arq = new RandomAccessFile(hd, "r");
 //        int numByte = (int) bloco / 8;
