@@ -58,7 +58,8 @@ public class BetitanderFileSystem {
             System.out.println("Byte Nr:" + i + " -> " + b + " bin ->" + xBinario((char) b));
         }
         arq.close();
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //isso eh o motivo de um erro que dava
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public boolean criaPasta(String caminho) {
