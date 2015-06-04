@@ -69,23 +69,29 @@ public class BetitanderFileSystem {
         byte[] umBloco = new byte[18];
         byte[] umaPasta = folder();
         blocoVazio = this.getBlocoVazio();
-        
         String nomePasta = "";
+        
+        
         for (int i = 0; i < caminho.length(); i++) {
             if (caminho.charAt(i) == '/' || i == caminho.length()) {
+                
                 nomePasta = "";
             } else {
                 nomePasta = nomePasta + caminho.charAt(i);
             }
         }
         
-        int tmp = (int)nomePasta.charAt(0);
+        int tmp = Integer.valueOf(nomePasta);
+        
+        String novo = caminho.substring(nomePasta.length());
+        
         //tratar o nome do caminho
 
-        pastaOndeCriaNova = this.exist(caminho);
+        pastaOndeCriaNova = this.exist(nomePasta);
         System.out.println("vou criar a pasta nos seguintes parametros:");
         System.out.println("Bloco Vazio -> " + blocoVazio);
-        System.out.println("pastaOndeCriaNova -> " + pastaOndeCriaNova);
+        System.out.println("nome da pasta em string -> " + novo);
+        System.out.println("pastaOndeCriaNova (retorno do existe -> " + pastaOndeCriaNova);
         System.out.println("nome da pasta em String -> " + nomePasta + "nome INT -> " + tmp + "nome em bytes -> " + ((byte) tmp));
 //        if (pastaOndeCriaNova != 0) {
 //            this.setBlocoUsado(blocoVazio);

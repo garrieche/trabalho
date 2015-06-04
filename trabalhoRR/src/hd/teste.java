@@ -14,11 +14,12 @@ import java.io.IOException;
 public class teste {
 
     public static void main(String args[]) throws IOException {
-        String teste = "/11/1/3";
+        String teste = "/1";
         System.out.println(teste);
-        String temp = "";
+        //String temp = "";
         BetitanderFileSystem discoC = new BetitanderFileSystem();
-        System.out.println("retorno-> " + discoC.exist(teste) ); 
+        discoC.criaPasta(teste);
+        //System.out.println("retorno-> " + discoC.exist(teste) ); 
 //        for (int i = 0; i < teste.length(); i++) {
 //            if (teste.charAt(i) == '/') {
 //                if (temp != "") {
