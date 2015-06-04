@@ -33,6 +33,8 @@ public class Pasta {
     
     private short proxBloco;
     private long byteFinal;
+    
+    private File hd;
 
     public Pasta( File hd , long endereco ) throws FileNotFoundException, IOException {
         RandomAccessFile bloco = new RandomAccessFile(hd, "r");
@@ -56,6 +58,7 @@ public class Pasta {
         
         this.proxBloco = (short) bloco.readUnsignedShort();
         byteFinal = bloco.getFilePointer();
+        this.hd = hd;
         bloco.close();
         
         System.out.println("Criado objeto pasta:");
@@ -65,40 +68,88 @@ public class Pasta {
         System.out.println("Bytes Lidos...: " + (byteFinal - endereco) + "byte(s).");
     }
 
-    boolean existeSubPasta(String tempPath) {
+    public boolean existeSubPasta(String tempPath) throws FileNotFoundException, IOException {
         int pasta = Integer.parseInt(tempPath);
         byte p = (byte)pasta;
-        if (p == getNomePrimeiroArquivo()) return true;
-        if (p == getNomeSegundoArquivo()) return true;
-        if (p == getNomeTerceiroArquivo()) return true;
-        if (p == getNomeQuartoArquivo()) return true;
+        if (p == getNomePrimeiroArquivo() && getSegurancaPrimeiroArquivo() == 0 ) return true;
+        if (p == getNomeSegundoArquivo()  && getSegurancaSegundoArquivo()  == 0 ) return true;
+        if (p == getNomeTerceiroArquivo() && getSegurancaTerceiroArquivo() == 0 ) return true;
+        if (p == getNomeQuartoArquivo()   && getSegurancaQuartoArquivo()   == 0 ) return true;
+        
+        while (this.proxBloco != 0) {
+            RandomAccessFile bloco = new RandomAccessFile(hd, "r");
+            bloco.seek(this.proxBloco);
+        
+            this.blocoPrimeiroArquivo = (short) bloco.readUnsignedShort();
+            this.segurancaPrimeiroArquivo = bloco.readByte();
+            this.nomePrimeiroArquivo = bloco.readByte();
+        
+            this.blocoSegundoArquivo = (short) bloco.readUnsignedShort();
+            this.segurancaSegundoArquivo = bloco.readByte();
+            this.nomeSegundoArquivo = bloco.readByte();
+        
+            this.blocoTerceiroArquivo = (short) bloco.readUnsignedShort();
+            this.segurancaTerceiroArquivo = bloco.readByte();
+            this.nomeTerceiroArquivo = bloco.readByte();
+        
+            this.blocoQuartoArquivo = (short) bloco.readUnsignedShort();
+            this.segurancaQuartoArquivo = bloco.readByte();
+            this.nomeQuartoArquivo = bloco.readByte();
+        
+            this.proxBloco = (short) bloco.readUnsignedShort();
+            byteFinal = bloco.getFilePointer();
+            bloco.close();
+            if (p == getNomePrimeiroArquivo() && getSegurancaPrimeiroArquivo() == 0 ) return true;
+            if (p == getNomeSegundoArquivo()  && getSegurancaSegundoArquivo()  == 0 ) return true;
+            if (p == getNomeTerceiroArquivo() && getSegurancaTerceiroArquivo() == 0 ) return true;
+            if (p == getNomeQuartoArquivo()   && getSegurancaQuartoArquivo()   == 0 ) return true;
+        }
         
         return false;
         
     }
 
-    int getFileCounter(String tempPath) {
+    public int getFileCounter(String tempPath) {
+        int pasta = Integer.parseInt(tempPath);
+        byte p = (byte)pasta;
+        if (p == getNomePrimeiroArquivo()) return this.blocoPrimeiroArquivo;
+        if (p == getNomeSegundoArquivo()) return this.blocoSegundoArquivo;
+        if (p == getNomeTerceiroArquivo()) return this.blocoTerceiroArquivo;
+        if (p == getNomeQuartoArquivo()) return this.blocoQuartoArquivo;
         return (int)this.byteFinal;
     }
 
-    public byte getNomePrimeiroArquivo() {
+    private byte getNomePrimeiroArquivo() {
         return nomePrimeiroArquivo;
     }
 
-    public byte getNomeSegundoArquivo() {
+    private byte getNomeSegundoArquivo() {
         return nomeSegundoArquivo;
     }
 
-    public byte getNomeTerceiroArquivo() {
+    private byte getNomeTerceiroArquivo() {
         return nomeTerceiroArquivo;
     }
 
-    public byte getNomeQuartoArquivo() {
+    private byte getNomeQuartoArquivo() {
         return nomeQuartoArquivo;
     }
+
+    private byte getSegurancaPrimeiroArquivo() {
+        return segurancaPrimeiroArquivo;
+    }
+
+    private byte getSegurancaSegundoArquivo() {
+        return segurancaSegundoArquivo;
+    }
+
+    private byte getSegurancaTerceiroArquivo() {
+        return segurancaTerceiroArquivo;
+    }
+
+    private byte getSegurancaQuartoArquivo() {
+        return segurancaQuartoArquivo;
+    }
     
-    
-    
-    
-    
+   
 }
