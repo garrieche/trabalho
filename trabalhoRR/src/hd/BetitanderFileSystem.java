@@ -78,7 +78,8 @@ public class BetitanderFileSystem {
                 nomePasta = nomePasta + caminho.charAt(i);
             }
         }
-        int tmp = Integer.getInteger(nomePasta);
+        
+        int tmp = (int)nomePasta.charAt(0);
         //tratar o nome do caminho
 
         pastaOndeCriaNova = this.exist(caminho);
@@ -186,62 +187,33 @@ public class BetitanderFileSystem {
         return folder;
     }
 
-    private short exist(String caminho) throws FileNotFoundException, IOException {
+    public short exist(String caminho) throws FileNotFoundException, IOException {
 
-        if (caminho == null) {
-            return 0;
-        }
-        if (caminho.length() == 1 && caminho.charAt(0) != '/') {
-            return 0;
-        }
-        if (caminho.length() == 1 && caminho.charAt(0) == '/') {
-            return 128;
-        }
-
-        byte[] umBloco = new byte[18];
+        if (caminho == null)  return 0;
+        if (caminho.length() == 1 && caminho.charAt(0) != '/') return 0;
+        if (caminho.length() == 1 && caminho.charAt(0) == '/') return 128;
+        
         String tempPath = "";
-        RandomAccessFile path = new RandomAccessFile(hd, "r");
-        path.seek(128);
-        path.read(umBloco);
+        Pasta umaPasta = new Pasta (  hd , 128);
+        boolean navegou = false;
+        
         for (int i = 0; i < caminho.length(); i++) {
-            if (caminho.charAt(i) == '/' || i == caminho.length()) {
-                System.out.println(tempPath);
-
-                //aqui procura o bloco da proxima desta pasta
+            if (caminho.charAt(i) == '/' ) {
+                if (tempPath != ""){
+                    navegou = umaPasta.existeSubPasta(tempPath);
+                    if (navegou){
+                        int proxAdress = umaPasta.getFileCounter( tempPath );
+                        umaPasta = new Pasta( hd , proxAdress);
+                    }
+                }
                 tempPath = "";
-
             } else {
                 tempPath = tempPath + caminho.charAt(i);
-
             }
-            //System.out.println(temp);  
+            navegou = umaPasta.existeSubPasta(tempPath);
+            if (navegou) return (short) umaPasta.getFileCounter( tempPath );
         }
-        for (int i = 1; i < caminho.length(); i++) {
-            if (caminho.charAt(i) == '/') {
-                break;
-            }
-        }
-
-        String teste = caminho;
-        System.out.println("Caminho Recebido ->  " + teste);
-
-        path.seek(128);                 // Posicao do Raiz
-        path.read(umBloco);
-        String temp = "";
-        for (int i = 0; i < teste.length(); i++) {
-            temp = temp + teste.charAt(i);
-            if (teste.charAt(i) == '/') {
-                if (temp.length() == 1) {            // Raiz "/"
-
-                } else {
-
-                }
-                System.out.println(temp);
-                temp = "";
-            }
-        }
-        System.out.println(temp);
-        return (0);
+        return -1;
     }
 
     void setBlocoUsado(int bloco) throws IOException {
