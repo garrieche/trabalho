@@ -17,8 +17,22 @@ public class Bits {
     }
 
     public static char xpegabit(char c, char b) {
+        char pos = inverte(b);
+
+        // System.out.println("pos vale ->" + (int)pos);
+        return pegabit(c, pos);
+    }
+    //             3        byte          0 ou 1
+    //mudar do bit b do char c para o valor v
+
+    public static char mudabit(char c, char b, char v) {
+        char pos = inverte(b);
+        return ((char) ((v == 1) ? c | (1 << pos) : c & (~(1 << pos))));
+    }
+
+    private static char inverte(char b) {
         char pos = b;
-        switch ((int)b) {
+        switch ((int) b) {
             case 0:
                 pos = 7;
                 break;
@@ -45,13 +59,6 @@ public class Bits {
                 break;
 
         }
-       // System.out.println("pos vale ->" + (int)pos);
-        return pegabit(c , pos);
-    }
-        //             3        byte          0 ou 1
-    //mudar do bit b do char c para o valor v
-
-    public static char mudabit(char c, char b, char v) {
-        return ((char) ((v == 1) ? c | (1 << b) : c & (~(1 << b))));
+        return pos;
     }
 }

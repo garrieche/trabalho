@@ -64,51 +64,33 @@ public class BetitanderFileSystem {
     }
 
     public boolean criaPasta(String caminho) throws IOException {
-        int blocoVazio;
-        int pastaOndeCriaNova;
-        byte[] umBloco = new byte[18];
-        byte[] umaPasta = folder();
-        blocoVazio = this.getBlocoVazio();
-        String nomePasta = "";
+        short blocoVazio;
         
+        String caminhoFinal=""; 
         
-        for (int i = 0; i < caminho.length(); i++) {
-            if (caminho.charAt(i) == '/' || i == caminho.length()) {
-                
-                nomePasta = "";
+        if ( exist(caminho) != 0 ){
+            System.out.println("Arquivo ou Pasta já existente.");
+            return false ;
+        }
+        else
+        {
+            String splitado[] = caminho.split("/");
+            for (int i = 1; i < splitado.length-1; i++)
+                caminhoFinal += ("/" + splitado[i]) ;
+            
+            if (caminhoFinal.equals("")) caminhoFinal = "/";
+            if (exist(caminhoFinal) == 0) return false;
+            temEspacoNaPasta(caminhoFinal);
+            byte[] novaPasta = folder();
+            Pasta pastaExistente = new Pasta( hd, exist(caminhoFinal));
+            blocoVazio = getBlocoVazio();
+            if (blocoVazio > 0){
+                pastaExistente.gravaNovaPasta( blocoVazio, novaPasta, splitado[splitado.length-1] );
             } else {
-                nomePasta = nomePasta + caminho.charAt(i);
+                System.out.println("Acabou o espaço em disco!!!! ");
+                return false;
             }
         }
-        
-        int tmp = Integer.valueOf(nomePasta);
-        
-        String novo = caminho.substring(nomePasta.length());
-        
-        //tratar o nome do caminho
-
-        pastaOndeCriaNova = this.exist(nomePasta);
-        System.out.println("vou criar a pasta nos seguintes parametros:");
-        System.out.println("Bloco Vazio -> " + blocoVazio);
-        System.out.println("nome da pasta em string -> " + novo);
-        System.out.println("pastaOndeCriaNova (retorno do existe -> " + pastaOndeCriaNova);
-        System.out.println("nome da pasta em String -> " + nomePasta + "nome INT -> " + tmp + "nome em bytes -> " + ((byte) tmp));
-//        if (pastaOndeCriaNova != 0) {
-//            this.setBlocoUsado(blocoVazio);
-//            RandomAccessFile path = new RandomAccessFile(hd, "r");
-//            path.seek(pastaOndeCriaNova);
-//            path.read(umBloco);
-//
-//            //tratar posicao na pasta
-//            //tratar gravar nome
-//            umBloco[0] = (byte) blocoVazio;
-//            
-//            umBloco[3] = (byte) tmp;
-//            path.seek(blocoVazio);
-//            path.write(umaPasta);
-//        }
-//        //onde?
-//
         return true;
     }
 
@@ -125,7 +107,7 @@ public class BetitanderFileSystem {
         return true;
     }
 
-    private static String xBinario(char valor) {
+     static String xBinario(char valor) {
         String ret = "";
         for (int i = 0; i < 8; i++) {
             ret = String.valueOf((int) pegabit(valor, (char) i)) + ret;
@@ -141,7 +123,8 @@ public class BetitanderFileSystem {
             char b = (char) arq.readUnsignedByte();
             for (char j = 0; j < 7; j++) {
                 if ((int) xpegabit(b, j) == 0) {
-                    return (short) (bitsAnteriores + (j));
+                   setBlocoUsado( bitsAnteriores + (j));
+                   return (short) (128 + (18 * (bitsAnteriores + (j))) );
                 }
             }
         }
@@ -205,7 +188,8 @@ public class BetitanderFileSystem {
         
         for (int i = 0; i < caminho.length(); i++) {
             if (caminho.charAt(i) == '/' ) {
-                if (tempPath != ""){
+                if (!"".equals(tempPath)){
+                    System.out.println("SubPasta001");
                     navegou = umaPasta.existeSubPasta(tempPath);
                     if (navegou){
                         int proxAdress = umaPasta.getFileCounter( tempPath );
@@ -216,37 +200,40 @@ public class BetitanderFileSystem {
             } else {
                 tempPath = tempPath + caminho.charAt(i);
             }
+            
             navegou = umaPasta.existeSubPasta(tempPath);
             if (navegou) return (short) umaPasta.getFileCounter( tempPath );
         }
-        return -1;
+        return 0;
     }
 
-    void setBlocoUsado(int bloco) throws IOException {
-        RandomAccessFile arq = new RandomAccessFile(hd, "r");
-        int numByte = (int) bloco / 8;
-        int numBitnoByte = bloco % 8;
-        arq.seek(numByte);
-        char b = arq.readChar();
-        mudabit((char) numBitnoByte, b, (char) 1);
+    private void setBlocoUsado(int bloco) throws IOException {
+        char novoBit;
+        long pointer;
+        char b;
+        char a;
+        RandomAccessFile arq = new RandomAccessFile(hd, "rw");
+        pointer = ((bloco/8));
+        arq.seek(pointer);
+        byte leitura;
+        leitura = arq.readByte();
+        b = (char)leitura;
+        a = (char) bloco;
+        novoBit = mudabit(b, a, (char) 1);
+        arq.seek(pointer);
+        arq.writeByte(novoBit);
+        
     }
+
+    private void temEspacoNaPasta(String caminhoFinal) throws IOException {
+        short bytePasta = exist(caminhoFinal);
+        Pasta minhaPasta = new Pasta( hd, bytePasta);
+        if( minhaPasta.estaCheia() ){
+            short blocoExtendePasta = getBlocoVazio();
+            minhaPasta.expande( blocoExtendePasta, folder());
+        }     
+    }
+
+
 }
 
-//    void setBlocoLivre(int bloco) throws IOException {
-//        RandomAccessFile arq = new RandomAccessFile(hd, "r");
-//        int numByte = (int) bloco / 8;
-//        int numBitnoByte = bloco % 8;
-//        arq.seek(numByte);
-//        char b = arq.readChar();
-//        mudabit((char) numBitnoByte, b, (char) 0);
-//    }
-//
-//    void gravarBloco(int bloco, char dados[]) throws IOException {
-//        
-//      //  this.setarBlocoUsado(bloco);
-//        RandomAccessFile arq = new RandomAccessFile(hd, "r");
-//        int numByte = (int) bloco / 8;
-//        int numBitnoByte = bloco % 8;
-//        arq.seek((bloco*18)+128); //dessa forma chega no byte apropriado
-//        arq.write(dados); //grava os 16 chars        
-//    }

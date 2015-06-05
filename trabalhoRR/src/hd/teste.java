@@ -5,6 +5,8 @@
  */
 package hd;
 
+import static hd.BetitanderFileSystem.xBinario;
+import static hd.Bits.mudabit;
 import java.io.IOException;
 
 /**
@@ -14,26 +16,20 @@ import java.io.IOException;
 public class teste {
 
     public static void main(String args[]) throws IOException {
-        String teste = "/1";
-        System.out.println(teste);
-        //String temp = "";
+        String teste = "/5";
         BetitanderFileSystem discoC = new BetitanderFileSystem();
-        discoC.criaPasta(teste);
-        //System.out.println("retorno-> " + discoC.exist(teste) ); 
-//        for (int i = 0; i < teste.length(); i++) {
-//            if (teste.charAt(i) == '/') {
-//                if (temp != "") {
-//                    System.out.println("aqui eu sei a pasta intermediaria para saber o bloco da proxima");
-//                    System.out.println(temp);
-//                    System.out.println("retorno-> " + discoC.exist(temp) ); 
-//                }
-//                temp = "";
-//            } else {
-//                temp = temp + teste.charAt(i);
-//            }
-//        }
-//        System.out.println(temp);
+        //discoC.formatar();
+       // discoC.MostraHD();
+        if (discoC.criaPasta(teste)) System.out.println("Criou!!!");
+        else System.out.println("Deu zica!!!");
+       // discoC.MostraHD();
+//        byte teste = (byte) 10000000;
+//        char umChar = (char)teste;
+//        char charMudado = mudabit( umChar , (char)1 ,(char) 1);
+//        System.out.println("Mudado -> " + xBinario(charMudado));
         
         
     }
+
+    
 }
