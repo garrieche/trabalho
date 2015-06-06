@@ -18,51 +18,22 @@ public class teste {
     public static void main(String args[]) throws IOException {
         
         BetitanderFileSystem discoC = new BetitanderFileSystem();
+        discoC.formatar();
+//        for (int i = 1; i < 16; i++) {
+//            String pastinha = "/"+i;
+//            System.out.println("Criando a pastinha -> " + pastinha);
+//            discoC.criaPasta(pastinha);    
+//        }
+        discoC.criaPasta("/1");
+        discoC.criaPasta("/1/2");
+        discoC.criaPasta("/1/2/3");
+        discoC.criaPasta("/1/2/3/4");
+        discoC.criaPasta("/2");
+        discoC.criaPasta("/3");
+        discoC.criaPasta("/200");
         
-        //discoC.formatar();
-        // discoC.MostraHD();
         
-        String teste = "/1";        
-//        if (discoC.criaPasta(teste)) {
-//            System.out.println("Criou!!!");
-//        } else {
-//            System.out.println("Deu zica!!!");
-//        }
-        // discoC.MostraHD();
-//        byte teste = (byte) 10000000;
-//        char umChar = (char)teste;
-//        char charMudado = mudabit( umChar , (char)1 ,(char) 1);
-//        System.out.println("Mudado -> " + xBinario(charMudado));
-//        teste = "/2";
-//        if (discoC.criaPasta(teste)) {
-//            System.out.println("Criou!!!");
-//        } else {
-//            System.out.println("Deu zica!!!");
-//        }
-//        teste = "/3";
-//        if (discoC.criaPasta(teste)) {
-//            System.out.println("Criou!!!");
-//        } else {
-//            System.out.println("Deu zica!!!");
-//        }
-//        teste = "/4";
-//        if (discoC.criaPasta(teste)) {
-//            System.out.println("Criou!!!");
-//        } else {
-//            System.out.println("Deu zica!!!");
-//        }
-//        teste = "/5";
-//        if (discoC.criaPasta(teste)) {
-//            System.out.println("Criou!!!");
-//        } else {
-//            System.out.println("Deu zica!!!");
-//        }
-        teste = "/5";
-        if (discoC.criaPasta(teste)) {
-            System.out.println("Criou!!!");
-        } else {
-            System.out.println("Deu zica!!!");
-        }
+                
     }
 
 }
