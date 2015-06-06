@@ -59,8 +59,6 @@ public class BetitanderFileSystem {
             System.out.println("Byte Nr:" + i + " -> " + b + " bin ->" + xBinario((char) b));
         }
         arq.close();
-        //isso eh o motivo de um erro que dava
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public boolean criaPasta(String caminho) throws IOException {
@@ -68,7 +66,7 @@ public class BetitanderFileSystem {
         
         String caminhoFinal=""; 
         
-        if ( exist(caminho) != 0 ){
+        if ( (exist(caminho) == 0) || (exist(caminho) == 128) ){
             System.out.println("Arquivo ou Pasta já existente.");
             return false ;
         }
@@ -79,6 +77,8 @@ public class BetitanderFileSystem {
                 caminhoFinal += ("/" + splitado[i]) ;
             
             if (caminhoFinal.equals("")) caminhoFinal = "/";
+            //quando estou tentando criar a subpasta preciso receber aki o endereço 
+            //que vai criar e o caminho final esta incorreto
             if (exist(caminhoFinal) == 0) return false;
             temEspacoNaPasta(caminhoFinal);
             byte[] novaPasta = folder();
@@ -183,17 +183,19 @@ public class BetitanderFileSystem {
         if (caminho.length() == 1 && caminho.charAt(0) == '/') return 128;
         
         String tempPath = "";
-        Pasta umaPasta = new Pasta (  hd , 128);
+        Pasta pastaRaiz = new Pasta (  hd , 128);
         boolean navegou = false;
-        
+        short retorno = 0;
         for (int i = 0; i < caminho.length(); i++) {
             if (caminho.charAt(i) == '/' ) {
+                //teste se a string esta em /
+                System.out.println("Caminho caractere do for -> " + caminho.charAt(i));
                 if (!"".equals(tempPath)){
                     System.out.println("SubPasta001");
-                    navegou = umaPasta.existeSubPasta(tempPath);
+                    navegou = pastaRaiz.existeSubPasta(tempPath);
                     if (navegou){
-                        int proxAdress = umaPasta.getFileCounter( tempPath );
-                        umaPasta = new Pasta( hd , proxAdress);
+                        int proxAdress = pastaRaiz.getFileCounter( tempPath );
+                        pastaRaiz = new Pasta( hd , proxAdress);
                     }
                 }
                 tempPath = "";
@@ -201,10 +203,12 @@ public class BetitanderFileSystem {
                 tempPath = tempPath + caminho.charAt(i);
             }
             
-            navegou = umaPasta.existeSubPasta(tempPath);
-            if (navegou) return (short) umaPasta.getFileCounter( tempPath );
+            navegou = pastaRaiz.existeSubPasta(tempPath);
+            //esse que retorna o endereço da sub pasta???
+            if (navegou) retorno = (short) pastaRaiz.getFileCounter( tempPath );
+            System.out.println("o retorno da função exit é -> " + retorno);
         }
-        return 0;
+        return retorno;
     }
 
     private void setBlocoUsado(int bloco) throws IOException {

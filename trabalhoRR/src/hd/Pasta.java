@@ -119,10 +119,6 @@ public class Pasta {
 
     }
 
-    public boolean temEspacoNaPasta(String caminhoFinal) {
-        return true;
-    }
-
     public int getFileCounter(String tempPath) {
         int pasta = Integer.parseInt(tempPath);
         byte p = (byte) pasta;
@@ -174,7 +170,6 @@ public class Pasta {
     }
 
     void gravaNovaPasta(short blocoVazio, byte[] novaPasta, String nome) throws FileNotFoundException, IOException {
-        boolean ocupado = false;
         boolean terminei = false;
 
         if (this.blocoPrimeiroArquivo == 0) {
@@ -200,8 +195,6 @@ public class Pasta {
                         this.nomeQuartoArquivo = (byte) (int) Integer.valueOf(nome);
                         this.segurancaQuartoArquivo = 0;
                         terminei = true;
-                    } else {
-                        ocupado = true;
                     }
                 }
             }
@@ -211,7 +204,7 @@ public class Pasta {
             gravaBinarioNovaPasta(blocoVazio, novaPasta);
             return ;
         }
-        while (this.proxBloco != 0 && !ocupado) {
+        while (this.proxBloco != 0) {
             leMaisBlocoDaPasta();
             if (this.blocoPrimeiroArquivo == 0) {
                 this.blocoPrimeiroArquivo = blocoVazio;
@@ -236,8 +229,6 @@ public class Pasta {
                             this.nomeQuartoArquivo = (byte) (int) Integer.valueOf(nome);
                             this.segurancaQuartoArquivo = 0;
                             terminei = true;
-                        } else {
-                            ocupado = true;
                         }
                     }
                 }
@@ -264,9 +255,8 @@ public class Pasta {
         bloco.seek(this.byteInicial + 16);
         bloco.writeShort(this.proxBloco);
         bloco.seek(adress);
-        for (int i = 0; i < folder.length; i++) {
-            bloco.write(folder);
-        }
+        bloco.write(folder);
+
         bloco.close();
     }
 
