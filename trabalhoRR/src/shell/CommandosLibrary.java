@@ -36,6 +36,10 @@ public class CommandosLibrary {
                     listDirectory( comando[1]);
                 else listDirectory(getPathAtual());
                 break;
+            case "gabrielgay":
+                System.out.println("Sim ele é gay");
+                break;
+                        
             case "rd":
                 if (comando.length > 1)
                    removeDirectory( comando[1]);
@@ -50,7 +54,27 @@ public class CommandosLibrary {
                 if (comando.length >1)
                     removeArchive( comando[1]);
                 else retorno = "Parametros Faltantes ou Inexistentes.";
-                
+            default:
+                System.out.println("comando Invalido!");
+                System.out.println("comandos disponiveis: \n"
+                        + "==============================================\n"
+                        + "md - MakeDirectory - Cria uma pasta\n"
+                        + "Usage md [nomePasta] Exemplo: md /2\n"
+                        + "==============================================\n"
+                        + "rd - RemoveDirectory - Remove uma pasta Vazia\n"
+                        + "Usage rd [nomePasta] Exemplo: md /2\n"
+                        + "==============================================\n"
+                        + "ld - ListDirectory - Mostra uma pasta"
+                        + "Usage ld [nomePasta] Exemplo: ld /2/3\n"
+                        + "==============================================\n"
+                        + "ma - "
+                        + "==============================================\n"
+                        + "ra - "
+                        + "==============================================\n"
+                        + "ca - "
+                        + "==============================================\n"
+                        + "xa - ");
+                break;
         }    
         if (!retorno.isEmpty())
             System.out.println(retorno);
@@ -140,23 +164,4 @@ public class CommandosLibrary {
 //                    System.out.println("falta parametros");
 //                }
 //                break;
-//            default:
-//                System.out.println("comando Invalido!");
-//                System.out.println("comandos disponiveis: \n"
-//                        + "==============================================\n"
-//                        + "md - MakeDirectory - Cria uma pasta\n"
-//                        + "Usage md [nomePasta] Exemplo: md /2\n"
-//                        + "==============================================\n"
-//                        + "rd - RemoveDirectory - Remove uma pasta Vazia\n"
-//                        + "Usage rd [nomePasta] Exemplo: md /2\n"
-//                        + "==============================================\n"
-//                        + "ld - ListDirectory - Mostra uma pasta"
-//                        + "Usage ld [nomePasta] Exemplo: ld /2/3\n"
-//                        + "==============================================\n"
-//                        + "ma - "
-//                        + "==============================================\n"
-//                        + "ra - "
-//                        + "==============================================\n"
-//                        + "ca - "
-//                        + "==============================================\n"
-//                        + "xa - ");
+            
