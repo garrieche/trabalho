@@ -366,4 +366,126 @@ public class Pasta {
         return 0;
 
     }
+
+    boolean apagaSubPasta(String splitado) throws IOException {
+        //if (this.existeSubPasta(splitado)) {
+        //se sim, existe apaga
+        boolean terminei = false;
+
+        int pasta = (int) Integer.valueOf(splitado);
+        byte p = (byte) pasta;
+        if (p == getNomePrimeiroArquivo() && getSegurancaPrimeiroArquivo() == 0) {
+            this.blocoPrimeiroArquivo = 0;
+            this.nomePrimeiroArquivo = 0;
+            this.segurancaPrimeiroArquivo = (byte) 10000000;
+            terminei = true;
+        }
+        if (p == getNomeSegundoArquivo() && getSegurancaSegundoArquivo() == 0) {
+            this.blocoSegundoArquivo = 0;
+            this.nomeSegundoArquivo = 0;
+            this.segurancaSegundoArquivo = (byte) 10000000;
+            terminei = true;
+        }
+        if (p == getNomeTerceiroArquivo() && getSegurancaTerceiroArquivo() == 0) {
+            this.blocoTerceiroArquivo = 0;
+            this.nomeTerceiroArquivo = 0;
+            this.segurancaTerceiroArquivo = (byte) 10000000;
+            terminei = true;
+        }
+        if (p == getNomeQuartoArquivo() && getSegurancaQuartoArquivo() == 0) {
+            this.blocoQuartoArquivo = 0;
+            this.nomeQuartoArquivo = 0;
+            this.segurancaQuartoArquivo = (byte) 10000000;
+            terminei = true;
+        }
+        if (terminei) {
+            atualizaBytesDaPasta();
+            return true;
+        }
+
+        while (this.proxBloco != 0) {
+            leMaisBlocoDaPasta();
+
+            if (p == getNomePrimeiroArquivo() && getSegurancaPrimeiroArquivo() == 0) {
+                this.blocoPrimeiroArquivo = 0;
+                this.nomePrimeiroArquivo = 0;
+                this.segurancaPrimeiroArquivo = (byte) 10000000;
+                terminei = true;
+            }
+            if (p == getNomeSegundoArquivo() && getSegurancaSegundoArquivo() == 0) {
+                this.blocoSegundoArquivo = 0;
+                this.nomeSegundoArquivo = 0;
+                this.segurancaSegundoArquivo = (byte) 10000000;
+                terminei = true;
+            }
+            if (p == getNomeTerceiroArquivo() && getSegurancaTerceiroArquivo() == 0) {
+                this.blocoTerceiroArquivo = 0;
+                this.nomeTerceiroArquivo = 0;
+                this.segurancaTerceiroArquivo = (byte) 10000000;
+                terminei = true;
+            }
+            if (p == getNomeQuartoArquivo() && getSegurancaQuartoArquivo() == 0) {
+                this.blocoQuartoArquivo = 0;
+                this.nomeQuartoArquivo = 0;
+                this.segurancaQuartoArquivo = (byte) 10000000;
+                terminei = true;
+            }
+            if (terminei) {
+                atualizaBytesDaPasta();
+                return true;
+            }
+        }
+        //} //chave do if
+        System.out.println("Incrivel nao achei esta pasta");
+        return false; //caso nao apague
+    }
+
+    boolean estaVazia() throws IOException {
+        boolean vazia = true;
+
+        byte p = (byte) 0;
+        if (p < blocoPrimeiroArquivo && getSegurancaPrimeiroArquivo() == 0) {
+            vazia = false;
+            return vazia;
+        } else {
+            if (p < blocoSegundoArquivo && getSegurancaSegundoArquivo() == 0) {
+                vazia = false;
+                return vazia;
+            } else {
+                if (p < blocoTerceiroArquivo && getSegurancaTerceiroArquivo() == 0) {
+                    vazia = false;
+                    return vazia;
+                } else {
+                    if (p < blocoQuartoArquivo && getSegurancaQuartoArquivo() == 0) {
+                        vazia = false;
+                        return vazia;
+                    }
+                }
+            }
+        }
+        while (this.proxBloco != 0) {
+            leMaisBlocoDaPasta();
+
+            if (p < blocoPrimeiroArquivo && getSegurancaPrimeiroArquivo() == 0) {
+                vazia = false;
+                return vazia;
+            } else {
+                if (p < blocoSegundoArquivo && getSegurancaSegundoArquivo() == 0) {
+                    vazia = false;
+                    return vazia;
+                } else {
+                    if (p < blocoTerceiroArquivo && getSegurancaTerceiroArquivo() == 0) {
+                        vazia = false;
+                        return vazia;
+                    } else {
+                        if (p < blocoQuartoArquivo && getSegurancaQuartoArquivo() == 0) {
+                            vazia = false;
+                            return vazia;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }
