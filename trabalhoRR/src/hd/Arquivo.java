@@ -31,5 +31,7 @@ public class Arquivo {
     public short getBloco() {
         return bloco;
     }
-   
+   void jair(){
+       System.out.println("");
+   }
 }
