@@ -300,8 +300,10 @@ public class BetitanderFileSystem {
         
     }
 
-    public void mostraPasta(String vetorCMD) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void mostraPasta(String vetorCMD) throws IOException {
+        short endereco = exist(vetorCMD);
+        Pasta pasta = new Pasta(hd, endereco);
+        pasta.mostraPasta();
     }
 
     public void copiaArquivo(String vetorCMD, String vetorCMD0) {

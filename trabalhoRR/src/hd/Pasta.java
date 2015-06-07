@@ -488,4 +488,67 @@ public class Pasta {
         }
         return true;
     }
+
+    void mostraPasta() throws IOException {
+
+        if (getNomePrimeiroArquivo() > 0) {
+            String pasta = "";
+            if (this.segurancaPrimeiroArquivo == (byte) 00000000) {
+                pasta = "/";
+            }
+            System.out.println(pasta + this.nomePrimeiroArquivo);
+        }
+        if (getNomeSegundoArquivo() > 0) {
+            String pasta = "";
+            if (this.segurancaSegundoArquivo == (byte) 00000000) {
+                pasta = "/";
+            }
+            System.out.println(pasta + this.nomeSegundoArquivo);
+        }
+        if (getNomeTerceiroArquivo() > 0) {
+            String pasta = "";
+            if (this.segurancaTerceiroArquivo == (byte) 00000000) {
+                pasta = "/";
+            }
+            System.out.println(pasta + this.nomeTerceiroArquivo);
+        }
+        if (getNomeQuartoArquivo() > 0) {
+            String pasta = "";
+            if (this.segurancaQuartoArquivo == (byte) 00000000) {
+                pasta = "/";
+            }
+            System.out.println(pasta + this.nomeQuartoArquivo);
+        }
+        while (this.proxBloco != 0) {
+            leMaisBlocoDaPasta();
+            if (getNomePrimeiroArquivo() > 0) {
+                String pasta = "";
+                if (this.segurancaPrimeiroArquivo == (byte) 00000000) {
+                    pasta = "/";
+                }
+                System.out.println(pasta + this.nomePrimeiroArquivo);
+            }
+            if (getNomeSegundoArquivo() > 0) {
+                String pasta = "";
+                if (this.segurancaSegundoArquivo == (byte) 00000000) {
+                    pasta = "/";
+                }
+                System.out.println(pasta + this.nomeSegundoArquivo);
+            }
+            if (getNomeTerceiroArquivo() > 0) {
+                String pasta = "";
+                if (this.segurancaTerceiroArquivo == (byte) 00000000) {
+                    pasta = "/";
+                }
+                System.out.println(pasta + this.nomeTerceiroArquivo);
+            }
+            if (getNomeQuartoArquivo() > 0) {
+                String pasta = "";
+                if (this.segurancaQuartoArquivo == (byte) 00000000) {
+                    pasta = "/";
+                }
+                System.out.println(pasta + this.nomeQuartoArquivo);
+            }
+        }
+    }
 }
