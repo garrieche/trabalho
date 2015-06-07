@@ -13,11 +13,9 @@ public class Shell {
         int i = 0; 
         Scanner sc = new Scanner(System.in); 
         String cmd = "";
-        String cmd2 = "";
         while(sc.hasNext()){
             i++; 
-            cmd = sc.next();
-            cmd2 = sc.next();
+            cmd = sc.nextLine();
             if( cmd.equals("exit")) {
                 System.out.println("------------------------");
                 System.out.println("Logoff of Betitanter.");

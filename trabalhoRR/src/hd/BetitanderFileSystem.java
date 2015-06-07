@@ -88,7 +88,7 @@ public class BetitanderFileSystem {
         return true;
     }
 
-    public boolean criaArquivo(String caminho, byte[] binario) {
+    public boolean criaArquivo(String caminho, String local) {
         return true;
     }
 
@@ -298,6 +298,18 @@ public class BetitanderFileSystem {
         arq.writeByte(novoBit);
         arq.close();
         
+    }
+
+    public void mostraPasta(String vetorCMD) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void copiaArquivo(String vetorCMD, String vetorCMD0) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void moveArquivo(String vetorCMD, String vetorCMD0) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
