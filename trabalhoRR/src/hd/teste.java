@@ -1,18 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package hd;
 
-import static hd.BetitanderFileSystem.xBinario;
-import static hd.Bits.mudabit;
 import java.io.IOException;
 
-/**
- *
- * @author Jair
- */
 public class teste {
 
     public static void main(String args[]) throws IOException {
@@ -31,7 +20,17 @@ public class teste {
         discoC.criaPasta("/2");
         discoC.criaPasta("/3");
         discoC.criaPasta("/200");
-        
+        System.out.println("apagando pasta vazia que existe");
+        discoC.apagaPasta("/2");
+        System.out.println("apagando pasta cheia");
+        discoC.apagaPasta("/1");
+        System.out.println("apagando Pasta em sub pasta vazia");
+        discoC.apagaPasta("/1/2/3/4");
+        System.out.println("Apagando pasta que nao existe");
+        discoC.apagaPasta("/1/3");
+        System.out.println("apagando pasta com nome grande 200");
+        discoC.apagaPasta("/200");
+        System.out.println("Ufa!! que trabalhao!!!");
         
                 
     }

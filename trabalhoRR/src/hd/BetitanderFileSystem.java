@@ -93,17 +93,39 @@ public class BetitanderFileSystem {
     }
 
     public void apagaPasta(String caminho) throws IOException {
+        if (caminho == null) {
+            System.out.println("Caminho Invalido");
+            return;
+        }
+        if (caminho.length() == 1 && caminho.charAt(0) != '/') {
+            System.out.println("Caminho Invalido");
+            return;
+        }
+        if (caminho.length() == 1 && caminho.charAt(0) == '/') {
+            System.out.println("Nao eh possivel apagar pásta raiz");
+            return;
+        }
+        
         String caminhoAnterior = "";
          
         String splitado[] = caminho.split("/");
         for (int i = 1; i < splitado.length - 1; i++) {
             caminhoAnterior += ("/" + splitado[i]);
         }
+        if (caminhoAnterior.equals("")) {
+            caminhoAnterior = "/";
+        }
 
         short retCaminhoAnt = exist(caminhoAnterior);
+        short retCaminho = exist(caminho);
         Pasta paiPasta = new Pasta(hd, retCaminhoAnt);
-        short blocoFilho = paiPasta.getBlocoPasta(splitado[splitado.length]);
-        if (paiPasta.apagaSubPasta(splitado[splitado.length])==true){
+        short blocoFilho = paiPasta.getBlocoPasta(splitado[splitado.length-1]);
+        Pasta filhoPasta = new Pasta(hd, retCaminho);
+        if (filhoPasta.estaVazia()==false) {
+            System.out.println("a pasta nao esta vazia");
+            return;
+        }
+        if (paiPasta.apagaSubPasta(splitado[splitado.length-1])==true){
             setBlocoLivre(blocoFilho);
         }
     }
@@ -258,6 +280,24 @@ public class BetitanderFileSystem {
             minhaPasta.expande(blocoExtendePasta, folder());
         }
 
+    }
+
+    private void setBlocoLivre(short blocoFilho) throws FileNotFoundException, IOException {
+        System.out.println("aqui libera o bloco");
+        char novoBit;
+        long pointer;
+        int bit;
+        byte leitura;
+        RandomAccessFile arq = new RandomAccessFile(hd, "rw");
+        pointer = ((blocoFilho / 8));
+        bit = ((blocoFilho % 8));
+        arq.seek(pointer);
+        leitura = arq.readByte();
+        novoBit = mudabit((char) leitura, (char) bit, (char) 0);
+        arq.seek(pointer);
+        arq.writeByte(novoBit);
+        arq.close();
+        
     }
 
 }
