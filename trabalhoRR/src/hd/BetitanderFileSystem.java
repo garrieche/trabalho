@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package hd;
 
 import static hd.Bits.mudabit;
@@ -13,10 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-/**
- *
- * @author Jair
- */
 public class BetitanderFileSystem {
 
     private File hd;
@@ -101,9 +92,20 @@ public class BetitanderFileSystem {
         return true;
     }
 
-    public boolean apagaPasta(String caminho) {
-        // apenas se a pasta estiver vazia
-        return true;
+    public void apagaPasta(String caminho) throws IOException {
+        String caminhoAnterior = "";
+         
+        String splitado[] = caminho.split("/");
+        for (int i = 1; i < splitado.length - 1; i++) {
+            caminhoAnterior += ("/" + splitado[i]);
+        }
+
+        short retCaminhoAnt = exist(caminhoAnterior);
+        Pasta paiPasta = new Pasta(hd, retCaminhoAnt);
+        short blocoFilho = paiPasta.getBlocoPasta(splitado[splitado.length]);
+        if (paiPasta.apagaSubPasta(splitado[splitado.length])==true){
+            setBlocoLivre(blocoFilho);
+        }
     }
 
     public boolean apagaArquivo(String caminho) {
@@ -203,16 +205,16 @@ public class BetitanderFileSystem {
             Pasta umaPasta = new Pasta(hd, pastaRaiz.getBlocoPasta(splitado[1]));
             retorno = pastaRaiz.getBlocoPasta(splitado[1]);
 
-            while (x < splitado.length ) {
+            while (x < splitado.length) {
                 if (umaPasta.existeSubPasta(splitado[x])) {
                     retorno = umaPasta.getBlocoPasta(splitado[x]);
                     umaPasta = new Pasta(hd, umaPasta.getBlocoPasta(splitado[x]));
-                    
-                    x++; 
+
+                    x++;
                 } else {
-                    return 0 ;
+                    return 0;
                 }
-                
+
             }
 
         }
