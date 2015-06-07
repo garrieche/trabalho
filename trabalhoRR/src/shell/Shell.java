@@ -2,14 +2,15 @@ package shell;
 
 import java.io.IOException;
 import java.util.Scanner;
-import static shell.CommandosLibrary.command;
+
 
 public class Shell {
     public static void main(String args[]) throws IOException {
-        System.out.println("Bem vindo ao Betitander:");
-        System.out.println("------------------------");
+        CommandosLibrary interpretador = new CommandosLibrary();
+        System.out.println("Shell of Betitander SO:");
+        System.out.println("-----------------------");
         System.out.println("");
-        System.out.print("Type your command:");
+        System.out.print(interpretador.getPathAtual() + " " + "Type your command:");
         int i = 0; 
         Scanner sc = new Scanner(System.in); 
         String cmd = "";
@@ -23,10 +24,9 @@ public class Shell {
                 System.out.println("Thank you for using.");
                 break;
             }else {
-                //System.out.println(command( cmd )) ;
-                command(cmd);
+                interpretador.command(cmd.trim());
             }
-            System.out.println("Type yout command:"); 
+            System.out.print(interpretador.getPathAtual() + " " + "Type your command:");
         } sc.close(); 
     }
     

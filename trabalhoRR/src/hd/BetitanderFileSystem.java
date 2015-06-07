@@ -3,7 +3,9 @@ package hd;
 import static hd.Bits.mudabit;
 import static hd.Bits.pegabit;
 import static hd.Bits.xpegabit;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -88,7 +90,72 @@ public class BetitanderFileSystem {
         return true;
     }
 
-    public boolean criaArquivo(String caminho, String local) {
+    public boolean criaArquivo(String caminho, String local) throws IOException {
+        short blocoVazio;
+        short blocoInicial;
+        String caminhoFinal = "";
+        if ((exist(caminho) != 0)) {
+            System.out.println("Arquivo ou Pasta já existente.");
+            return false;
+        } else {
+            String splitado[] = caminho.split("/");
+            for (int i = 1; i < splitado.length - 1; i++) {
+                caminhoFinal += ("/" + splitado[i]);
+            }
+
+            if (caminhoFinal.equals("")) {
+                caminhoFinal = "/";
+            }
+
+            if (exist(caminhoFinal) == 0) {
+                return false;
+            }
+            temEspacoNaPasta(caminhoFinal);
+            File fileOrigin = new File(local);
+            byte segCodigo[] = new byte[256];
+            int x;
+            int i = 0;
+            try {
+                BufferedInputStream in = new BufferedInputStream(new FileInputStream(fileOrigin));
+                while ((x = in.read()) != -1) {
+                    segCodigo[i] = (byte) x;
+                    i++;
+                }
+                in.close();
+            } catch (Exception e) {
+                System.out.println("Erro = " + e);
+            }
+            blocoInicial = getBlocoVazio();
+            if (blocoInicial > 0) {
+                RandomAccessFile arq = new RandomAccessFile(hd, "rw");
+                arq.seek(blocoInicial);
+                boolean sairfor = false;
+                for (int j = 0; j < segCodigo.length; j++) {
+                    for (int k = 0; k < 16; k++) {
+                        if (j < segCodigo.length) {
+                            arq.writeByte(segCodigo[(j * 16) + k]);
+                            if (segCodigo[(j * 16) + k] == (byte) 15) {
+                                sairfor = true;
+                            }
+                        }
+                    }
+                    if (sairfor) {
+                        arq.writeShort(0);
+                        j = segCodigo.length + 2;
+                    } else {
+                        blocoVazio = getBlocoVazio();
+                        arq.writeShort(blocoVazio);
+                        arq.seek(blocoVazio);
+                    }
+                }
+                arq.close();
+            } else {
+                System.out.println("Acabou o espaço em disco!!!! ");
+                return false;
+            }
+            Pasta pastaExistente = new Pasta(hd, exist(caminhoFinal));
+            pastaExistente.novoArquivo(blocoInicial, splitado[splitado.length-1]);
+        }
         return true;
     }
 
@@ -105,9 +172,9 @@ public class BetitanderFileSystem {
             System.out.println("Nao eh possivel apagar pásta raiz");
             return;
         }
-        
+
         String caminhoAnterior = "";
-         
+
         String splitado[] = caminho.split("/");
         for (int i = 1; i < splitado.length - 1; i++) {
             caminhoAnterior += ("/" + splitado[i]);
@@ -119,19 +186,58 @@ public class BetitanderFileSystem {
         short retCaminhoAnt = exist(caminhoAnterior);
         short retCaminho = exist(caminho);
         Pasta paiPasta = new Pasta(hd, retCaminhoAnt);
-        short blocoFilho = paiPasta.getBlocoPasta(splitado[splitado.length-1]);
+        short blocoFilho = paiPasta.getBlocoPasta(splitado[splitado.length - 1]);
         Pasta filhoPasta = new Pasta(hd, retCaminho);
-        if (filhoPasta.estaVazia()==false) {
+
+        if (filhoPasta.estaVazia() == false) {
             System.out.println("a pasta nao esta vazia");
             return;
         }
-        if (paiPasta.apagaSubPasta(splitado[splitado.length-1])==true){
+        if (paiPasta.apagaSubPasta(splitado[splitado.length - 1]) == true) {
             setBlocoLivre(blocoFilho);
         }
     }
 
-    public boolean apagaArquivo(String caminho) {
-        return true;
+    public void apagaArquivo(String caminho) throws IOException {
+        
+        if (caminho == null) {
+            System.out.println("Caminho Invalido");
+            return;
+        }
+        if (caminho.length() == 1 && caminho.charAt(0) != '/') {
+            System.out.println("Caminho Invalido");
+            return;
+        }
+        if (caminho.length() == 1 && caminho.charAt(0) == '/') {
+            System.out.println("Nao eh possivel apagar pásta raiz");
+            return;
+        }
+
+        String caminhoAnterior = "";
+
+        String splitado[] = caminho.split("/");
+        for (int i = 1; i < splitado.length - 1; i++) {
+            caminhoAnterior += ("/" + splitado[i]);
+        }
+        if (caminhoAnterior.equals("")) {
+            caminhoAnterior = "/";
+        }
+
+        short retCaminhoAnt = exist(caminhoAnterior);
+        short retCaminho = exist(caminho);
+        Pasta paiPasta = new Pasta(hd, retCaminhoAnt);
+        short blocoFilho = paiPasta.getBlocoPasta(splitado[splitado.length - 1]);
+        RandomAccessFile arq = new RandomAccessFile(hd, "r");
+        boolean flag = true;
+        while (flag) {
+            arq.seek(blocoFilho+16);
+            setBlocoLivre(blocoFilho);
+            blocoFilho = arq.readShort();
+            if (blocoFilho == 0){
+                flag = false ;
+            }    
+        }
+        paiPasta.apagaArquivo(splitado[splitado.length - 1]); 
     }
 
     static String xBinario(char valor) {
@@ -297,11 +403,11 @@ public class BetitanderFileSystem {
         arq.seek(pointer);
         arq.writeByte(novoBit);
         arq.close();
-        
+
     }
 
-    public void mostraPasta(String vetorCMD) throws IOException {
-        short endereco = exist(vetorCMD);
+    public void mostraPasta(String caminho) throws IOException {
+        short endereco = exist(caminho);
         Pasta pasta = new Pasta(hd, endereco);
         pasta.mostraPasta();
     }
