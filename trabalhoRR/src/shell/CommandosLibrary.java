@@ -1,22 +1,33 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shell;
 
-/**
- *
- * @author Jair
- */
+import hd.BetitanderFileSystem;
+import java.io.IOException;
+
 public class CommandosLibrary {
-    private String returnConsole;
-    public static String command( String cmd) {
+
+    public static void command(String cmd) throws IOException {
         String vetorCMD[] = cmd.split(" ");
-        String retorno = "";
-        for (int i = 0; i < vetorCMD.length ; i++) {
-            retorno += ("|" + vetorCMD[i]) ; 
+        BetitanderFileSystem SO = new BetitanderFileSystem();
+
+        switch (vetorCMD[0]) {
+            case "md":
+                SO.criaPasta(vetorCMD[1]);
+            case "rd":
+                SO.apagaPasta(vetorCMD[1]);
+            case "ld":
+                System.out.println("nao implementado");
+            case "ma":
+                System.out.println("nao implementado");
+            case "ra":
+                System.out.println("nao implementado");
+            case "ca":
+                System.out.println("nao implementado");
+            case "xa":
+                System.out.println("nao implementado");
+                break;
+            default:
+                System.out.println("comando Invalido!");
         }
-        return retorno;
+
     }
 }

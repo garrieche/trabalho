@@ -1,19 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shell;
 
+import java.io.IOException;
 import java.util.Scanner;
 import static shell.CommandosLibrary.command;
 
-/**
- *
- * @author Jair
- */
 public class Shell {
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException {
         System.out.println("Bem vindo ao Betitander:");
         System.out.println("------------------------");
         System.out.println("");
@@ -21,9 +13,11 @@ public class Shell {
         int i = 0; 
         Scanner sc = new Scanner(System.in); 
         String cmd = "";
+        String cmd2 = "";
         while(sc.hasNext()){
             i++; 
             cmd = sc.next();
+            cmd2 = sc.next();
             if( cmd.equals("exit")) {
                 System.out.println("------------------------");
                 System.out.println("Logoff of Betitanter.");
@@ -31,7 +25,8 @@ public class Shell {
                 System.out.println("Thank you for using.");
                 break;
             }else {
-                System.out.println(command( cmd )) ;
+                //System.out.println(command( cmd )) ;
+                command(cmd);
             }
             System.out.println("Type yout command:"); 
         } sc.close(); 
