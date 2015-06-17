@@ -15,6 +15,10 @@ public class BetitanderFileSystem {
     private File hd;
     private int tamHD;
     private byte[] vHD;
+    
+    private int user = 0 ;
+    private int permUser = 777;
+    private int permOutros = 777;
 
     public BetitanderFileSystem() throws IOException {
         this.tamHD = (1024 * 18) + 128;
@@ -276,30 +280,34 @@ public class BetitanderFileSystem {
         folder[1] = 0;                   //  para bloco inicio  (0 = vazio ) 
         folder[2] = (byte) 10000000;     //  1 Byte para Arquivo / Pasta e Seguranca
         folder[3] = 0;                   //  1 byte para nome do Arquivo
+        folder[4] = 0;                   //  1 Byte para dono do Arquivo
 
         // =====================================================
         // Arquivo 2
         // =====================================================      
-        folder[4] = 0;
+        
         folder[5] = 0;
-        folder[6] = (byte) 10000000;
-        folder[7] = 0;
+        folder[6] = 0;
+        folder[7] = (byte) 10000000;
+        folder[8] = 0;
+        folder[9] = 0;
 
         // =====================================================
         // Arquivo 3
         // =====================================================      
-        folder[8] = 0;
-        folder[9] = 0;
-        folder[10] = (byte) 10000000;
+        
+        folder[10] = 0;
         folder[11] = 0;
+        folder[12] = (byte) 10000000;
+        folder[13] = 0;
+        folder[14] = 0;
 
         // =====================================================
-        // Arquivo 4
+        // Filling
         // =====================================================  
-        folder[12] = 0;
-        folder[13] = 0;
-        folder[14] = (byte) 10000000;
-        folder[15] = 0;
+        
+       
+        folder[15] = 0;   // filling
 
         // =====================================================
         // Continuação da pasta em outros blocos
