@@ -1,5 +1,6 @@
 package hd;
 
+import GU.GU;
 import static hd.Bits.mudabit;
 import static hd.Bits.pegabit;
 import static hd.Bits.xpegabit;
@@ -16,7 +17,7 @@ public class BetitanderFileSystem {
     private int tamHD;
     private byte[] vHD;
     
-    private int user = 0 ;
+    private GU user ;
     private int permUser = 777;
     private int permOutros = 777;
 
@@ -31,6 +32,7 @@ public class BetitanderFileSystem {
     }
 
     public void formatar() throws IOException {
+        
         for (int i = 1; i < 128; i++) {
             vHD[i] = 0;
         }

@@ -16,4 +16,17 @@ public class GU {
         file = new Scanner(new File("c:\\grupos.csv"));
     }
 
+    public Usuario getLogado() {
+        return logado;
+    }
+
+    private void setLogado(Usuario logado) {
+        this.logado = logado;
+    }
+    
+    public boolean podeLogar (int nome){
+        //this.logado(exist(nome));
+        return true;
+    }
+
 }
