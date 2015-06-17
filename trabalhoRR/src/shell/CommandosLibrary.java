@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class CommandosLibrary {
     private String dirAtual; 
     private BetitanderFileSystem SO;  
@@ -36,10 +37,6 @@ public class CommandosLibrary {
                     listDirectory( comando[1]);
                 else listDirectory(getPathAtual());
                 break;
-            case "gabrielgay":
-                System.out.println("Sim ele é gay");
-                break;
-                        
             case "rd":
                 if (comando.length > 1)
                    removeDirectory( comando[1]);
@@ -51,29 +48,47 @@ public class CommandosLibrary {
                 else retorno = "Parametros Faltantes ou Inexistentes.";
                 break;
             case "ra":
-                if (comando.length >1)
+                if (comando.length > 1)
                     removeArchive( comando[1]);
                 else retorno = "Parametros Faltantes ou Inexistentes.";
+                break;
+            case "ca":
+                if (comando.length > 2)
+                    copyArchive( comando[1], comando[2]);
+                else retorno = "Parametros Faltantes ou Inexistentes.";
+                break;
+            case "xa":
+                if (comando.length > 2) 
+                    moveArchive(comando[1], comando[2]);
+                else retorno = "Parametros Faltantes ou Inexistentes.";
+                break;
             default:
                 System.out.println("comando Invalido!");
                 System.out.println("comandos disponiveis: \n"
-                        + "==============================================\n"
+                        + "===============================================\n"
                         + "md - MakeDirectory - Cria uma pasta\n"
                         + "Usage md [nomePasta] Exemplo: md /2\n"
-                        + "==============================================\n"
+                        + "===============================================\n"
                         + "rd - RemoveDirectory - Remove uma pasta Vazia\n"
                         + "Usage rd [nomePasta] Exemplo: md /2\n"
-                        + "==============================================\n"
+                        + "===============================================\n"
                         + "ld - ListDirectory - Mostra uma pasta"
                         + "Usage ld [nomePasta] Exemplo: ld /2/3\n"
-                        + "==============================================\n"
-                        + "ma - "
-                        + "==============================================\n"
-                        + "ra - "
-                        + "==============================================\n"
-                        + "ca - "
-                        + "==============================================\n"
-                        + "xa - ");
+                        + "===============================================\n"
+                        + "ma - Make Archive - Cria um arquivo\n"
+                        + "Usage ma [PastaOrigem] [pastaDestino]\n"
+                        + "Exemplo: ma c://testebetitander.bin /1\n"
+                        + "===============================================\n"
+                        + "ra - Remove Archive - remove um arquivo\n"
+                        + "Usage ra [caminho/nomeArquivo] Exemplo: ra /1/2\n"
+                        + "===============================================\n"
+                        + "ca - Copy Archive - Copia Arquivo\n"
+                        + "Usage ca [caminho/nomeArqOrig] [caminhoDestino]\n"
+                        + "Exemplo: ca /1/2 /3\n"
+                        + "===============================================\n"
+                        + "xa - move Archive - Move Arquivo\n"
+                        + "Usage xa [caminho/nomeArqOrig] [caminhoDestino]\n"
+                        + "Exemplo: xa /1/2 /3\n");
                 break;
         }    
         if (!retorno.isEmpty())
@@ -120,48 +135,17 @@ public class CommandosLibrary {
     private void removeArchive(String comando) throws IOException {
         SO.apagaArquivo(comando);
     }
-}
-//
-//case "rd":
-//                if (vetorCMD.length > 1) {
-//                    SO.apagaPasta(vetorCMD[1]);
-//                } else {
-//                    System.out.println("falta parametros");
-//                }
-//                break;
-//            case "ld":
-//                if (vetorCMD.length > 1) {
-//                    SO.mostraPasta(vetorCMD[1]);
-//                } else {
-//                    System.out.println("falta parametros");
-//                }
-//                break;
-//            case "ma":
-//                if (vetorCMD.length > 2) {
-//                    SO.criaArquivo(vetorCMD[1], vetorCMD[2]);
-//                } else {
-//                    System.out.println("falta parametros");
-//                }
-//                break;
-//            case "ra":
-//                if (vetorCMD.length > 1) {
-//                    SO.apagaArquivo(vetorCMD[1]);
-//                } else {
-//                    System.out.println("falta parametros");
-//                }
-//                break;
-//            case "ca":
-//                if (vetorCMD.length > 2) {
-//                    SO.copiaArquivo(vetorCMD[1], vetorCMD[2]);
-//                } else {
-//                    System.out.println("falta parametros");
-//                }
-//                break;
-//            case "xa":
-//                if (vetorCMD.length > 2) {
-//                    SO.moveArquivo(vetorCMD[1], vetorCMD[2]);
-//                } else {
-//                    System.out.println("falta parametros");
-//                }
-//                break;
-            
+    
+    private void copyArchive(String comando, String comando0) throws IOException {
+        SO.copiaArquivo(comando, comando0);    
+    
+    }
+
+    private void moveArchive(String comando, String comando0) throws IOException {
+        SO.moveArquivo(comando, comando0);
+    }
+    
+    private void executaArquivo(String comando) throws IOException {
+        SO.executaArquivo(comando);
+    }
+}            

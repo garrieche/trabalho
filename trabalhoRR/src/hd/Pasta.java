@@ -687,9 +687,8 @@ public class Pasta {
                 return;
             }
         }
-        //} //chave do if
         System.out.println("Incrivel nao achei esta pasta");
-        return ; //caso nao apague
+        return ; 
     }
 
 }

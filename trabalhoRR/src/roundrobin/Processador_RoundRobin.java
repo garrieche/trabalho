@@ -1,24 +1,14 @@
 package roundrobin;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Processador_RoundRobin {
 
-    /**
-     * @param args the command line arguments
-     *
-     * pb = Probabilidade de Bloqueio pr = Probabilidade de Resposta tc = Tempo
-     * de criação tv = Tempo de Vida
-     *
-     * [E] = Execucao [P] = Prontos [B] = Bloqueados
-     * @return
-     */
-    public static void main(String[] args) {
+
+    public void Processador(byte[] tmpVetByte) {
         int AC;
         int PC;
         int N, Z;
@@ -31,7 +21,7 @@ public class Processador_RoundRobin {
 
         Scanner file = null;
         int comando;
-        int[] tmpVet = new int[256];
+        byte[] tmpVet = tmpVetByte;
         int vlr1;
         int ciclo = 0;
         int x = 0;
@@ -57,40 +47,45 @@ public class Processador_RoundRobin {
         if (quantum > 0) {
             tmp = file.nextLine();
         } else {
-            erro = erro.concat("Prob de bloqueio deve ser entre 0.1 e 0.9\n");
+            erro = erro.concat("erro no tamanho do quantum\n");
         }
 
         pr = Float.valueOf(tmp);
         if (pr < 0.1 || pr > 0.9) {
             erro = erro.concat("Prob de resposta deve ser entre 0.1 e 0.9\n");
         }
-        vlr1 = -1;
-        do {
-            try {
-                vlr1 = file.nextInt();
-                vlr2 = file.nextLine().substring(1);
-                if (vlr1 > 0) {
-                    origem = vlr2;
-                    fileOrigin = new File(origem);
-                    try {
-                        BufferedInputStream in = new BufferedInputStream(new FileInputStream(fileOrigin));
-                        while ((x = in.read()) != -1) {
-                            tmpVet[i] = x;
-                            i++;
-                        }
-                        in.close();
-                    } catch (Exception e) {
-                        System.out.println("Erro = " + e);
-                    }
-                    processos.add(new Processo(vlr1, tmpVet));
-                } else {
-                    erro2 = erro2.concat("existe um processo invalido\n");
-                }
-            } catch (Exception e) {
-                System.out.println("Erro = " + e);
-            }
-            vlr2 = "";
-        } while (vlr1 != 0);
+        
+        
+        processos.add(new Processo(0, tmpVet));
+        
+        
+//        vlr1 = -1;
+//        do {
+//            try {
+//                vlr1 = file.nextInt();
+//                vlr2 = file.nextLine().substring(1);
+//                if (vlr1 > 0) {
+//                    origem = vlr2;
+//                    fileOrigin = new File(origem);
+//                    try {
+//                        BufferedInputStream in = new BufferedInputStream(new FileInputStream(fileOrigin));
+//                        while ((x = in.read()) != -1) {
+//                            tmpVet[i] = x;
+//                            i++;
+//                        }
+//                        in.close();
+//                    } catch (Exception e) {
+//                        System.out.println("Erro = " + e);
+//                    }
+//                    processos.add(new Processo(vlr1, tmpVet));
+//                } else {
+//                    erro2 = erro2.concat("existe um processo invalido\n");
+//                }
+//            } catch (Exception e) {
+//                System.out.println("Erro = " + e);
+//            }
+//            vlr2 = "";
+//        } while (vlr1 != 0);
         System.out.println("Processing Start...");
         if (erro.equals("")) {
             SistemaOperacional windows = new SistemaOperacional(pr, tamanhoPagina, nroPaginas);

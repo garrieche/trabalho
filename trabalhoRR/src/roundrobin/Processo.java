@@ -14,10 +14,12 @@ public class Processo {
     private int n;
     
     
-    public Processo(int tempodecriacao, int[] file) {
+    public Processo(int tempodecriacao, byte[] file) {
         this.status = 'X';
         this.tempodecriacao = tempodecriacao;
-        this.instrucoes = file;
+        for (int i = 0; i < file.length; i++) {
+            this.instrucoes[i] = file[i];
+        }
         this.tempodevida = 1000;
         System.out.println("Process Adding OK.");
     }

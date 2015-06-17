@@ -154,7 +154,7 @@ public class BetitanderFileSystem {
                 return false;
             }
             Pasta pastaExistente = new Pasta(hd, exist(caminhoFinal));
-            pastaExistente.novoArquivo(blocoInicial, splitado[splitado.length-1]);
+            pastaExistente.novoArquivo(blocoInicial, splitado[splitado.length - 1]);
         }
         return true;
     }
@@ -199,7 +199,7 @@ public class BetitanderFileSystem {
     }
 
     public void apagaArquivo(String caminho) throws IOException {
-        
+
         if (caminho == null) {
             System.out.println("Caminho Invalido");
             return;
@@ -230,14 +230,14 @@ public class BetitanderFileSystem {
         RandomAccessFile arq = new RandomAccessFile(hd, "r");
         boolean flag = true;
         while (flag) {
-            arq.seek(blocoFilho+16);
+            arq.seek(blocoFilho + 16);
             setBlocoLivre(blocoFilho);
             blocoFilho = arq.readShort();
-            if (blocoFilho == 0){
-                flag = false ;
-            }    
+            if (blocoFilho == 0) {
+                flag = false;
+            }
         }
-        paiPasta.apagaArquivo(splitado[splitado.length - 1]); 
+        paiPasta.apagaArquivo(splitado[splitado.length - 1]);
     }
 
     static String xBinario(char valor) {
@@ -412,12 +412,178 @@ public class BetitanderFileSystem {
         pasta.mostraPasta();
     }
 
-    public void copiaArquivo(String vetorCMD, String vetorCMD0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void copiaArquivo(String caminhoOrigem, String caminhoDestino) throws IOException {
+        short blocoVazio;
+        short blocoInicial;
+        String caminhoFinalOrigem = "";
+        String caminhoFinalDestino = "";
+        short blocoOrigem = exist(caminhoOrigem);
+        //preparando Origem
+        if (blocoOrigem == 0) {
+            System.out.println("Arquivo ou Pasta Origem não encontrado.");
+            return;
+        } else {
+            String splitadoOrigem[] = caminhoOrigem.split("/");
+            for (int i = 1; i < splitadoOrigem.length - 1; i++) {
+                caminhoFinalOrigem += ("/" + splitadoOrigem[i]);
+            }
+
+            if (caminhoFinalOrigem.equals("")) {
+                caminhoFinalOrigem = "/";
+            }
+            //preparando destino
+            if ((exist(caminhoDestino) != 0)) {
+                System.out.println("Arquivo ou Pasta Destino já existente.");
+                return;
+            } else {
+                String splitadoDestino[] = caminhoDestino.split("/");
+                for (int i = 1; i < splitadoDestino.length - 1; i++) {
+                    caminhoFinalDestino += ("/" + splitadoDestino[i]);
+                }
+
+                if (caminhoFinalDestino.equals("")) {
+                    caminhoFinalDestino = "/";
+                }
+
+                if (exist(caminhoFinalDestino) == 0) {
+                    return;
+                }
+                temEspacoNaPasta(caminhoFinalDestino);
+//=========== Começo da copia ==============================================
+//=========== Começo da leitura=============================================               
+                RandomAccessFile arq = new RandomAccessFile(hd, "rw");
+                arq.seek(blocoOrigem);
+                byte segCodigo[] = new byte[256];
+                boolean sairFor = false;
+                for (int i = 0; i < 255; i++) {
+                    for (int t = 0; t < 16; t++) {
+                        segCodigo[i] = arq.readByte();
+                        if (segCodigo[i] == (byte) 15) {
+                        sairFor = true;
+                        i = t = 300;
+                        }
+                    }
+                    if (!sairFor) {
+                        short prox = arq.readShort();
+                        arq.seek(prox);
+                    }
+                }
+//=========== Fim da leitura ==============================================
+//=========== Começo da gravação===========================================
+                blocoInicial = getBlocoVazio();
+                if (blocoInicial > 0) {
+                    arq.seek(blocoInicial);
+                    boolean sairfor = false;
+                    for (int j = 0; j < segCodigo.length; j++) {
+                        for (int k = 0; k < 16; k++) {
+                            if (j < segCodigo.length) {
+                                arq.writeByte(segCodigo[(j * 16) + k]);
+                                if (segCodigo[(j * 16) + k] == (byte) 15) {
+                                    sairfor = true;
+                                }
+                            }
+                        }
+                        if (sairfor) {
+                            arq.writeShort(0);
+                            j = segCodigo.length + 2;
+                        } else {
+                            blocoVazio = getBlocoVazio();
+                            arq.writeShort(blocoVazio);
+                            arq.seek(blocoVazio);
+                        }
+                    }
+                    arq.close();
+                } else {
+                    System.out.println("Acabou o espaço em disco!!!! ");
+                    return;
+                }
+                Pasta pastaExistente = new Pasta(hd, exist(caminhoFinalDestino));
+                pastaExistente.novoArquivo(blocoInicial, splitadoOrigem[splitadoOrigem.length - 1]);
+            }
+            System.out.println("Arquivo copiado com exito!");
+        }
     }
 
-    public void moveArquivo(String vetorCMD, String vetorCMD0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void moveArquivo(String caminhoOrigem, String caminhoDestino) throws IOException {
+        short blocoOrigem = exist(caminhoOrigem);
+        String caminhoPastaOrigem = "";
+        String caminhoPastaDestino = "";
+        //preparando Origem
+        if (blocoOrigem == 0) {
+            System.out.println("Arquivo ou Pasta Origem não encontrado.");
+            return;
+        } else {
+            String splitadoOrigem[] = caminhoOrigem.split("/");
+            for (int i = 1; i < splitadoOrigem.length - 1; i++) {
+                caminhoPastaOrigem += ("/" + splitadoOrigem[i]);
+            }
+
+            if (caminhoPastaOrigem.equals("")) {
+                caminhoPastaOrigem = "/";
+            }
+            //preparando destino
+            if ((exist(caminhoDestino) != 0)) {
+                System.out.println("Arquivo ou Pasta Destino já existente.");
+                return;
+            } else {
+                String splitadoDestino[] = caminhoDestino.split("/");
+                for (int i = 1; i < splitadoDestino.length; i++) {
+                    caminhoPastaDestino += ("/" + splitadoDestino[i]);
+                }
+
+                if (caminhoPastaDestino.equals("")) {
+                    caminhoPastaDestino = "/";
+                }
+
+                if (exist(caminhoPastaDestino) == 0) {
+                    return;
+                }
+                temEspacoNaPasta(caminhoPastaDestino);
+                
+                Pasta pastaOrigem = new Pasta(hd, exist(caminhoPastaOrigem));
+                Pasta pastaDestino = new Pasta(hd, exist(caminhoPastaDestino));
+                pastaOrigem.apagaArquivo(splitadoOrigem[splitadoOrigem.length]);
+                pastaDestino.novoArquivo(blocoOrigem, splitadoOrigem[splitadoOrigem.length]);
+            }
+            System.out.println("Arquivo movido com exito!");
+        }
     }
 
+    public byte[] executaArquivo(String comando) throws IOException {
+        short blocoOrigem = exist(comando);
+        String caminhoPasta = "";
+        byte segCodigo[] = new byte[256];
+         if (blocoOrigem == 0) {
+            System.out.println("Arquivo ou Pasta Origem não encontrado.");
+            segCodigo[0] = (byte) 15;
+            return (segCodigo);
+        } else {
+            String splitado[] = comando.split("/");
+            for (int i = 1; i < splitado.length - 1; i++) {
+                caminhoPasta += ("/" + splitado[i]);
+            }
+
+            if (caminhoPasta.equals("")) {
+                caminhoPasta = "/";
+            }
+                RandomAccessFile arq = new RandomAccessFile(hd, "rw");
+                arq.seek(blocoOrigem);
+                //byte segCodigo[] = new byte[256];
+                boolean sairFor = false;
+                for (int i = 0; i < 255; i++) {
+                    for (int t = 0; t < 16; t++) {
+                        segCodigo[i] = arq.readByte();
+                        if (segCodigo[i] == (byte) 15) {
+                        sairFor = true;
+                        i = t = 300;
+                        }
+                    }
+                    if (!sairFor) {
+                        short prox = arq.readShort();
+                        arq.seek(prox);
+                    }
+                }
+         }
+         return segCodigo;
+    }
 }
