@@ -62,5 +62,105 @@ public class Bits {
         return pos;
     }
     
+    public static char seguranca( int arqPasta, int permissao) {
+        if( permissao < 0 || permissao >77){ 
+            System.out.println("Permissao não acessivel");
+            return 0;
+        }
+        byte xSeguranca;
+        if (arqPasta == 0) xSeguranca = (byte) 00000000;
+        else xSeguranca = (byte) 10000000;
+        
+        char[] param = String.valueOf(permissao).toCharArray();
+        
+        switch ((int) param[0]) {
+            case 0:
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 1 , (char) 0 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 2 , (char) 0 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 3 , (char) 0 );
+                break;
+            case 1:
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 1 , (char) 0 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 2 , (char) 0 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 3 , (char) 1 );
+                break;
+            case 2:
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 1 , (char) 0 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 2 , (char) 1 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 3 , (char) 0 );
+                break;
+            case 3:
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 1 , (char) 0 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 2 , (char) 1 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 3 , (char) 1 );
+                break;
+            case 4:
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 1 , (char) 1 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 2 , (char) 0 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 3 , (char) 0 );
+                break;
+            case 5:
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 1 , (char) 1 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 2 , (char) 0 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 3 , (char) 1 );
+                break;
+            case 6:
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 1 , (char) 1 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 2 , (char) 1 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 3 , (char) 0 );
+                break;
+            case 7:
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 1 , (char) 1 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 2 , (char) 1 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 3 , (char) 1 );
+                break;
+        }
+        switch ((int) param[1]) {
+            case 0:
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 4 , (char) 0 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 5 , (char) 0 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 6 , (char) 0 );
+                break;
+            case 1:
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 4 , (char) 0 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 5 , (char) 0 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 6 , (char) 1 );
+                break;
+            case 2:
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 4 , (char) 0 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 5 , (char) 1 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 6 , (char) 0 );
+                break;
+            case 3:
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 4 , (char) 0 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 5 , (char) 1 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 6 , (char) 1 );
+                break;
+            case 4:
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 4 , (char) 1 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 5 , (char) 0 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 6 , (char) 0 );
+                break;
+            case 5:
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 4 , (char) 1 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 5 , (char) 0 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 6 , (char) 1 );
+                break;
+            case 6:
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 4 , (char) 1 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 5 , (char) 1 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 6 , (char) 0 );
+                break;
+            case 7:
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 4 , (char) 1 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 5 , (char) 1 );
+                xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 6 , (char) 1 );
+                break;
+        }
+        
+        return (char) xSeguranca;
+    }
+    
+    
     
 }

@@ -3,6 +3,7 @@ package hd;
 import GU.GU;
 import static hd.Bits.mudabit;
 import static hd.Bits.pegabit;
+import static hd.Bits.seguranca;
 import static hd.Bits.xpegabit;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -280,7 +281,7 @@ public class BetitanderFileSystem {
         // =====================================================    
         folder[0] = 0;                   //  2 bytes
         folder[1] = 0;                   //  para bloco inicio  (0 = vazio ) 
-        folder[2] = (byte) 10000000;     //  1 Byte para Arquivo / Pasta e Seguranca
+        folder[2] = (byte) seguranca(1,64);     //  1 Byte para Arquivo / Pasta e Seguranca
         folder[3] = 0;                   //  1 byte para nome do Arquivo
         folder[4] = 0;                   //  1 Byte para dono do Arquivo
 
@@ -290,7 +291,7 @@ public class BetitanderFileSystem {
         
         folder[5] = 0;
         folder[6] = 0;
-        folder[7] = (byte) 10000000;
+        folder[7] = (byte) seguranca(1,64);
         folder[8] = 0;
         folder[9] = 0;
 
@@ -300,7 +301,7 @@ public class BetitanderFileSystem {
         
         folder[10] = 0;
         folder[11] = 0;
-        folder[12] = (byte) 10000000;
+        folder[12] = (byte) seguranca(1,64);
         folder[13] = 0;
         folder[14] = 0;
 
