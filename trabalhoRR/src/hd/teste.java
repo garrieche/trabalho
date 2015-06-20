@@ -1,5 +1,6 @@
 package hd;
 
+import GU.GU;
 import java.io.IOException;
 
 public class teste {
@@ -17,6 +18,11 @@ public class teste {
 //        discoC.criaPasta("/1/2");
 //        discoC.criaArquivo("/1/7", "c://testebetitander.bin");
 //        discoC.mostraPasta("/1");
+        GU gu = new GU();
+        
+        System.out.println(gu.podeLogar(1));
+        System.out.println(gu.getLogado().getNome());
+        System.out.println(gu.estaNoGrupo(3));
         
                 
     }
