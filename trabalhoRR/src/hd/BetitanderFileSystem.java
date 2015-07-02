@@ -21,6 +21,8 @@ public class BetitanderFileSystem {
     private GU user ;
     private int permUser = 777;
     private int permOutros = 777;
+    
+    
 
     public BetitanderFileSystem() throws IOException {
         this.tamHD = (1024 * 18) + 128;
@@ -31,7 +33,42 @@ public class BetitanderFileSystem {
             formatar();
         }
     }
-
+    
+    public boolean getSegurança( String caminho , GU usuario , OperacaoSeguranca seg  ) throws IOException {
+     
+        Seguranca key;
+        switch (seg) {
+            case LER:
+               key = Seguranca.READ;
+               break;
+            case LISTAR:
+               key = Seguranca.READ;
+               break;
+            case ESCREVER:
+               key = Seguranca.WRITE;
+               break;    
+            case ALTERA_SEGURANCA:
+               key = Seguranca.WRITE;
+               break;
+            case CRIAR:
+               key = Seguranca.WRITE;
+               break;
+            case APAGAR:
+               key = Seguranca.WRITE;
+               break;
+        }
+        
+        short address = this.exist(caminho);
+        if (address == 0) return false;
+        Pasta localFolder = new Pasta( this.hd ,  address);
+       
+        
+        return true;
+    }
+    
+    
+    
+    
     public void formatar() throws IOException {
         
         for (int i = 1; i < 128; i++) {
