@@ -18,10 +18,12 @@ public class teste {
         GU gu = new GU();
         gu.podeLogar(2);
         BetitanderFileSystem discoC = new BetitanderFileSystem(gu);
-        //discoC.formatar();
-        //discoC.criaPasta("/1");
-        //discoC.criaPasta("/5");
+        discoC.formatar();
+        discoC.criaPasta("/1");
+        discoC.criaPasta("/5");
         discoC.mostraPasta("/");
+        gu.logout();
+        gu.podeLogar(2);
         if (discoC.getSegurança("/5", OperacaoSeguranca.LER)) 
             System.out.println("Pode Ler !!! "); else System.out.println("Nao ler");
         if (discoC.getSegurança("/5", OperacaoSeguranca.ALTERAR)) 
