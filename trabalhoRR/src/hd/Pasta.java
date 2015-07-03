@@ -399,33 +399,43 @@ public class Pasta {
     }
 
     public void mostraPasta() throws IOException {
-
+        System.out.println("List of Files/Directoryes");
+        System.out.println("Nome        Segurança       Proprietario     Binario");
+        System.out.println("-------------------------------------------------------------------------");
+        int arquivos = 0 ;
+        int diretorios = 0 ;
         if (getNomePrimeiroArquivo() > 0) {
             String pasta = "";
             if (getTipoArquivo(this.segurancaPrimeiroArquivo) == this.PASTA) {
+                diretorios++;
                 pasta = "/";
-            }
-            System.out.println(pasta + this.nomePrimeiroArquivo + "   " + this.segurancaFormatada(segurancaPrimeiroArquivo)
-                             + " Owner: " + this.nomeDonoPrimeiroArquivo
-                             + " Bin: " + xBinario( (char) this.segurancaPrimeiroArquivo) );
+            } else arquivos++;
+            System.out.println(pasta + this.nomePrimeiroArquivo 
+                             + "          " + this.segurancaFormatada(segurancaPrimeiroArquivo)
+                             + "          " + this.nomeDonoPrimeiroArquivo
+                             + "          " + xBinario( (char) this.segurancaPrimeiroArquivo) );
         }
         if (getNomeSegundoArquivo() > 0) {
             String pasta = "";
             if (getTipoArquivo(this.segurancaSegundoArquivo) == this.PASTA) {
+                diretorios++;
                 pasta = "/";
-            }
-            System.out.print(pasta + this.nomeSegundoArquivo + "   " + this.segurancaFormatada(segurancaSegundoArquivo) 
-                    + " Owner: " + this.nomeDonoSegundoArquivo
-                    + " Bin: " + xBinario( (char) this.segurancaSegundoArquivo));
+            }else arquivos++;
+            System.out.print(pasta + this.nomeSegundoArquivo 
+                    + "          " + this.segurancaFormatada(segurancaSegundoArquivo) 
+                    + "          " + this.nomeDonoSegundoArquivo
+                    + "          " + xBinario( (char) this.segurancaSegundoArquivo));
         }
         if (getNomeTerceiroArquivo() > 0) {
             String pasta = "";
             if (getTipoArquivo(this.segurancaTerceiroArquivo) == this.PASTA) {
+                diretorios++;
                 pasta = "/";
-            }
-            System.out.print(pasta + this.nomeTerceiroArquivo  + "   " + this.segurancaFormatada(segurancaTerceiroArquivo)
-                    + " Owner: " + this.nomeDonoTerceiroArquivo
-                    + " Bin: " + xBinario( (char) this.segurancaTerceiroArquivo));
+            }else arquivos++;
+            System.out.print(pasta + this.nomeTerceiroArquivo  
+                    + "          " + this.segurancaFormatada(segurancaTerceiroArquivo)
+                    + "          " + this.nomeDonoTerceiroArquivo
+                    + "          " + xBinario( (char) this.segurancaTerceiroArquivo));
         }
         
         while (this.proxBloco != 0) {
@@ -433,31 +443,44 @@ public class Pasta {
             if (getNomePrimeiroArquivo() > 0) {
             String pasta = "";
             if (getTipoArquivo(this.segurancaPrimeiroArquivo) == this.PASTA) {
+                diretorios++;
                 pasta = "/";
+            }else arquivos++;
+                System.out.print(pasta + this.nomePrimeiroArquivo 
+                        + "         " + this.segurancaFormatada(segurancaPrimeiroArquivo)
+                        + "         " + this.nomeDonoPrimeiroArquivo
+                        + "         " + xBinario( (char) this.segurancaPrimeiroArquivo));
             }
-            System.out.print(pasta + this.nomePrimeiroArquivo + "   " + this.segurancaFormatada(segurancaPrimeiroArquivo)
-                    + " Owner: " + this.nomeDonoPrimeiroArquivo
-                    + " Bin: " + xBinario( (char) this.segurancaPrimeiroArquivo));
-        }
-        if (getNomeSegundoArquivo() > 0) {
-            String pasta = "";
-            if (getTipoArquivo(this.segurancaSegundoArquivo) == this.PASTA) {
-                pasta = "/";
+            if (getNomeSegundoArquivo() > 0) {
+                String pasta = "";
+                if (getTipoArquivo(this.segurancaSegundoArquivo) == this.PASTA) {
+                    diretorios++;
+                    pasta = "/";
+                }else arquivos++;
+                System.out.print(pasta + this.nomeSegundoArquivo 
+                        + "          " + this.segurancaFormatada(segurancaSegundoArquivo)
+                        + "          " + this.nomeDonoSegundoArquivo
+                        + "          " + xBinario( (char) this.segurancaSegundoArquivo));
             }
-            System.out.print(pasta + this.nomeSegundoArquivo + "   " + this.segurancaFormatada(segurancaSegundoArquivo)
-                    + " Owner: " + this.nomeDonoSegundoArquivo
-                    + " Bin: " + xBinario( (char) this.segurancaSegundoArquivo));
-        }
-        if (getNomeTerceiroArquivo() > 0) {
-            String pasta = "";
-            if (getTipoArquivo(this.segurancaTerceiroArquivo) == this.PASTA) {
-                pasta = "/";
+            if (getNomeTerceiroArquivo() > 0) {
+                String pasta = "";
+                if (getTipoArquivo(this.segurancaTerceiroArquivo) == this.PASTA) {
+                    diretorios++;
+                    pasta = "/";
+                }else arquivos++;
+                System.out.print(pasta + this.nomeTerceiroArquivo 
+                        + "          " + this.segurancaFormatada(segurancaTerceiroArquivo)
+                        + "          " + this.nomeDonoTerceiroArquivo
+                        + "          " + xBinario( (char) this.segurancaTerceiroArquivo));
             }
-            System.out.print(pasta + this.nomeTerceiroArquivo + "   " + this.segurancaFormatada(segurancaTerceiroArquivo)
-                    + " Owner: " + this.nomeDonoTerceiroArquivo
-                    + " Bin: " + xBinario( (char) this.segurancaTerceiroArquivo));
         }
-        }
+        
+        System.out.println("");
+        System.out.println("");
+        System.out.println(arquivos + " arquivo(s) listado(s).");
+        System.out.println(diretorios + " pasta(s) listada(s)");
+        System.out.println("");
+        
         
     }
 
@@ -727,22 +750,19 @@ public class Pasta {
     
     private String segurancaFormatada( byte security) {
         String permissoes = "rwx ";
-         
-        for (int i = 1; i < 7; i++) {
-            System.out.println("Bit " + i + " ->" + pegabit((char) security, (char) i) );
-        }
-        if( pegabit((char) security, (char) 1) != 0) permissoes = permissoes.concat("r");
+                
+        if( (int)(byte)(xpegabit((char) security, (char) 1)) == 1) permissoes = permissoes.concat("r");
         else permissoes = permissoes.concat("-");
-        if( pegabit((char) security, (char) 1) != 0) permissoes = permissoes.concat("w");
+        if( (int)(byte)(xpegabit((char) security, (char) 2)) == 1) permissoes = permissoes.concat("w");
         else permissoes = permissoes.concat("-");
-        if( pegabit((char) security, (char) 1) != 0) permissoes = permissoes.concat("x");
+        if( (int)(byte)(xpegabit((char) security, (char) 3)) == 1) permissoes = permissoes.concat("x");
         else permissoes = permissoes.concat("-");
         permissoes = permissoes.concat(" ");
-        if( pegabit((char) security, (char) 1) != 0) permissoes = permissoes.concat("r");
+        if((int)(byte)(xpegabit((char) security, (char) 4)) == 1) permissoes = permissoes.concat("r");
         else permissoes = permissoes.concat("-");
-        if( pegabit((char) security, (char) 1) != 0) permissoes = permissoes.concat("w");
+        if( (int)(byte)(xpegabit((char) security, (char) 5)) == 1) permissoes = permissoes.concat("w");
         else permissoes = permissoes.concat("-");
-        if( pegabit((char) security, (char) 1) != 0) permissoes = permissoes.concat("x");
+        if( (int)(byte)(xpegabit((char) security, (char) 6)) == 1) permissoes = permissoes.concat("x");
         else permissoes = permissoes.concat("-");
         
         return permissoes;

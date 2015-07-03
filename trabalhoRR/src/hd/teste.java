@@ -16,12 +16,20 @@ public class teste {
     public static void main(String[] args) throws IOException {
         
         GU gu = new GU();
-        gu.podeLogar(1);
+        gu.podeLogar(2);
         BetitanderFileSystem discoC = new BetitanderFileSystem(gu);
-        discoC.formatar();
-        discoC.criaPasta("/1");
-        discoC.criaPasta("/5");
+        //discoC.formatar();
+        //discoC.criaPasta("/1");
+        //discoC.criaPasta("/5");
         discoC.mostraPasta("/");
+        if (discoC.getSegurança("/5", OperacaoSeguranca.LER)) 
+            System.out.println("Pode Ler !!! "); else System.out.println("Nao ler");
+        if (discoC.getSegurança("/5", OperacaoSeguranca.ALTERAR)) 
+            System.out.println("Pode Alterar !!! "); else System.out.println("nao alterar");
+        if (discoC.getSegurança("/5", OperacaoSeguranca.APAGAR)) 
+            System.out.println("Pode Apagar !!! "); else System.out.println("nao apagar");
+        if (discoC.getSegurança("/5", OperacaoSeguranca.EXECUTAR)) 
+            System.out.println("Pode Executar !!! "); else System.out.println("nao executar");
     }
    
 }
