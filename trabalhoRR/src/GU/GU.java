@@ -2,18 +2,21 @@ package GU;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GU {
 
     private Usuario logado;
     private ArrayList<Usuario> usuarios = new ArrayList<>();
-    private File hd = new File("c:\\usuarios.csv");
+    private File csv = new File("c:\\usuarios.csv");
 
-    public GU() throws FileNotFoundException {
+    public GU() {
         Scanner file = null;
         int user;
         String leitura;
@@ -21,8 +24,13 @@ public class GU {
         int umGrupo;
         Usuario umUsuario;
 
-        file = new Scanner(hd);
+        try {
+            file = new Scanner(csv);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(GU.class.getName()).log(Level.SEVERE, null, ex);
+        }
         leitura = file.nextLine();
+        leitura.trim();
         if (leitura != null) {
             splitado = leitura.split(",");
             user = Integer.valueOf(splitado[0]);
@@ -135,15 +143,31 @@ public class GU {
         
     }
 
-    private void salvaCSV() throws FileNotFoundException, IOException {
-        RandomAccessFile csv = new RandomAccessFile(hd, "rw");
-        for (Usuario usuario : usuarios) {
+    private void salvaCSV(){
+               
+        try
+	{
+	    FileWriter writer = new FileWriter(csv);
+
+            for (Usuario usuario : usuarios) {
             ArrayList<Integer> grupo = usuario.getGrupos();
             for (Integer grupo1 : grupo) {
-                csv.writeChars(usuario.getNome()+ "," + grupo1 + "\n");
+                writer.append(String.valueOf(usuario.getNome()));
+                writer.append(",");
+                writer.append(String.valueOf(grupo1));
+                writer.append("\n");
             }
         }
-        csv.write(-1);
-        csv.close();
+            writer.flush();
+	    writer.close();
+	}
+	catch(IOException e)
+	{
+	     e.printStackTrace();
+	} 
+    }
+
+    public void logout() {
+        this.logado = null;
     }
 }

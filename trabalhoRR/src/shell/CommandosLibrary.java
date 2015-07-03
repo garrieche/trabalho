@@ -109,6 +109,8 @@ public class CommandosLibrary {
                 } else {
                     System.out.println("você nao tem permissão!");
                 }
+            case "logout":
+                gu.logout();
             default:
                 System.out.println("comando Invalido!");
                 System.out.println("comandos disponiveis: \n"
