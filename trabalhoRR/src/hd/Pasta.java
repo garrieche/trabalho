@@ -1,7 +1,9 @@
 package hd;
 
+import static hd.BetitanderFileSystem.xBinario;
 import static hd.Bits.pegabit;
 import static hd.Bits.seguranca;
+import static hd.Bits.xpegabit;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,6 +27,9 @@ public class Pasta {
     private byte nomeDonoTerceiroArquivo;
 
     private byte filling;
+
+   
+    
     private short proxBloco;
     private long byteFinal;
     private long byteInicial;
@@ -400,21 +405,27 @@ public class Pasta {
             if (getTipoArquivo(this.segurancaPrimeiroArquivo) == this.PASTA) {
                 pasta = "/";
             }
-            System.out.println(pasta + this.nomePrimeiroArquivo);
+            System.out.println(pasta + this.nomePrimeiroArquivo + "   " + this.segurancaFormatada(segurancaPrimeiroArquivo)
+                             + " Owner: " + this.nomeDonoPrimeiroArquivo
+                             + " Bin: " + xBinario( (char) this.segurancaPrimeiroArquivo) );
         }
         if (getNomeSegundoArquivo() > 0) {
             String pasta = "";
             if (getTipoArquivo(this.segurancaSegundoArquivo) == this.PASTA) {
                 pasta = "/";
             }
-            System.out.println(pasta + this.nomeSegundoArquivo);
+            System.out.print(pasta + this.nomeSegundoArquivo + "   " + this.segurancaFormatada(segurancaSegundoArquivo) 
+                    + " Owner: " + this.nomeDonoSegundoArquivo
+                    + " Bin: " + xBinario( (char) this.segurancaSegundoArquivo));
         }
         if (getNomeTerceiroArquivo() > 0) {
             String pasta = "";
             if (getTipoArquivo(this.segurancaTerceiroArquivo) == this.PASTA) {
                 pasta = "/";
             }
-            System.out.println(pasta + this.nomeTerceiroArquivo);
+            System.out.print(pasta + this.nomeTerceiroArquivo  + "   " + this.segurancaFormatada(segurancaTerceiroArquivo)
+                    + " Owner: " + this.nomeDonoTerceiroArquivo
+                    + " Bin: " + xBinario( (char) this.segurancaTerceiroArquivo));
         }
         
         while (this.proxBloco != 0) {
@@ -424,80 +435,33 @@ public class Pasta {
             if (getTipoArquivo(this.segurancaPrimeiroArquivo) == this.PASTA) {
                 pasta = "/";
             }
-            System.out.println(pasta + this.nomePrimeiroArquivo);
+            System.out.print(pasta + this.nomePrimeiroArquivo + "   " + this.segurancaFormatada(segurancaPrimeiroArquivo)
+                    + " Owner: " + this.nomeDonoPrimeiroArquivo
+                    + " Bin: " + xBinario( (char) this.segurancaPrimeiroArquivo));
         }
         if (getNomeSegundoArquivo() > 0) {
             String pasta = "";
             if (getTipoArquivo(this.segurancaSegundoArquivo) == this.PASTA) {
                 pasta = "/";
             }
-            System.out.println(pasta + this.nomeSegundoArquivo);
+            System.out.print(pasta + this.nomeSegundoArquivo + "   " + this.segurancaFormatada(segurancaSegundoArquivo)
+                    + " Owner: " + this.nomeDonoSegundoArquivo
+                    + " Bin: " + xBinario( (char) this.segurancaSegundoArquivo));
         }
         if (getNomeTerceiroArquivo() > 0) {
             String pasta = "";
             if (getTipoArquivo(this.segurancaTerceiroArquivo) == this.PASTA) {
                 pasta = "/";
             }
-            System.out.println(pasta + this.nomeTerceiroArquivo);
+            System.out.print(pasta + this.nomeTerceiroArquivo + "   " + this.segurancaFormatada(segurancaTerceiroArquivo)
+                    + " Owner: " + this.nomeDonoTerceiroArquivo
+                    + " Bin: " + xBinario( (char) this.segurancaTerceiroArquivo));
         }
         }
+        
     }
 
-    private byte getNomePrimeiroArquivo() {
-        return nomePrimeiroArquivo;
-    }
-
-    private byte getNomeSegundoArquivo() {
-        return nomeSegundoArquivo;
-    }
-
-    private byte getNomeTerceiroArquivo() {
-        return nomeTerceiroArquivo;
-    }
-
-    private static int getTipoArquivo(byte seguranca) {
-        return (int) pegabit((char) seguranca, (char) 1);
-    }
-
-    private byte getSegurancaPrimeiroArquivo() {
-        return segurancaPrimeiroArquivo;
-    }
-
-    private byte getSegurancaSegundoArquivo() {
-        return segurancaSegundoArquivo;
-    }
-
-    private byte getSegurancaTerceiroArquivo() {
-        return segurancaTerceiroArquivo;
-    }
-
-    private void atualizaBytesDaPasta() throws FileNotFoundException, IOException {
-        RandomAccessFile bloco = new RandomAccessFile(hd, "rw");
-        bloco.seek(this.byteInicial);
-        bloco.writeShort(this.blocoPrimeiroArquivo);
-        bloco.writeByte(this.segurancaPrimeiroArquivo);
-        bloco.writeByte(this.nomePrimeiroArquivo);
-        bloco.writeByte(this.nomeDonoPrimeiroArquivo);
-        bloco.writeShort(this.blocoSegundoArquivo);
-        bloco.writeByte(this.segurancaSegundoArquivo);
-        bloco.writeByte(this.nomeSegundoArquivo);
-        bloco.writeByte(this.nomeDonoSegundoArquivo);
-        bloco.writeShort(this.blocoTerceiroArquivo);
-        bloco.writeByte(this.segurancaTerceiroArquivo);
-        bloco.writeByte(this.nomeTerceiroArquivo);
-        bloco.writeByte(this.nomeDonoTerceiroArquivo);
-        bloco.writeByte(this.filling);
-        bloco.close();
-    }
-
-    private void gravaBinarioNovaPasta(short blocoVazio, byte[] novaPasta) throws FileNotFoundException, IOException {
-        RandomAccessFile bloco = new RandomAccessFile(hd, "rw");
-        bloco.seek(blocoVazio);
-        bloco.write(novaPasta);
-        bloco.close();
-    }
-
-    public void novoArquivo(short blocoVazio, String nome) throws IOException {
+    public void novoArquivo(short blocoVazio, String nome, byte usuario) throws IOException {
             // TODO  Implementar Segurança posteriormente.
             //       Preciso pegar o usuario para terminar este metodo.
         byte xSeguranca = (byte) seguranca(1,700);
@@ -506,18 +470,21 @@ public class Pasta {
             this.blocoPrimeiroArquivo = blocoVazio;
             this.nomePrimeiroArquivo = (byte) (int) Integer.valueOf(nome);
             this.segurancaPrimeiroArquivo = xSeguranca;
+            this.nomeDonoPrimeiroArquivo = usuario;
             terminei = true;
         } else {
             if (this.blocoSegundoArquivo == 0) {
                 this.blocoSegundoArquivo = blocoVazio;
                 this.nomeSegundoArquivo = (byte) (int) Integer.valueOf(nome);
                 this.segurancaSegundoArquivo = xSeguranca;
+                this.nomeDonoSegundoArquivo = usuario;
                 terminei = true;
             } else {
                 if (this.blocoTerceiroArquivo == 0) {
                     this.blocoTerceiroArquivo = blocoVazio;
                     this.nomeTerceiroArquivo = (byte) (int) Integer.valueOf(nome);
                     this.segurancaTerceiroArquivo = xSeguranca;
+                    this.nomeDonoTerceiroArquivo = usuario;
                     terminei = true;
                 } 
             }
@@ -529,25 +496,28 @@ public class Pasta {
         while (this.proxBloco != 0) {
             leMaisBlocoDaPasta();
             if (this.blocoPrimeiroArquivo == 0) {
-                this.blocoPrimeiroArquivo = blocoVazio;
-                this.nomePrimeiroArquivo = (byte) (int) Integer.valueOf(nome);
-                this.segurancaPrimeiroArquivo = xSeguranca;
+            this.blocoPrimeiroArquivo = blocoVazio;
+            this.nomePrimeiroArquivo = (byte) (int) Integer.valueOf(nome);
+            this.segurancaPrimeiroArquivo = xSeguranca;
+            this.nomeDonoPrimeiroArquivo = usuario;
+            terminei = true;
+        } else {
+            if (this.blocoSegundoArquivo == 0) {
+                this.blocoSegundoArquivo = blocoVazio;
+                this.nomeSegundoArquivo = (byte) (int) Integer.valueOf(nome);
+                this.segurancaSegundoArquivo = xSeguranca;
+                this.nomeDonoSegundoArquivo = usuario;
                 terminei = true;
             } else {
-                if (this.blocoSegundoArquivo == 0) {
-                    this.blocoSegundoArquivo = blocoVazio;
-                    this.nomeSegundoArquivo = (byte) (int) Integer.valueOf(nome);
-                    this.segurancaSegundoArquivo = xSeguranca;
+                if (this.blocoTerceiroArquivo == 0) {
+                    this.blocoTerceiroArquivo = blocoVazio;
+                    this.nomeTerceiroArquivo = (byte) (int) Integer.valueOf(nome);
+                    this.segurancaTerceiroArquivo = xSeguranca;
+                    this.nomeDonoTerceiroArquivo = usuario;
                     terminei = true;
-                } else {
-                    if (this.blocoTerceiroArquivo == 0) {
-                        this.blocoTerceiroArquivo = blocoVazio;
-                        this.nomeTerceiroArquivo = (byte) (int) Integer.valueOf(nome);
-                        this.segurancaTerceiroArquivo = xSeguranca;
-                        terminei = true;
-                    } 
-                }
+                } 
             }
+        }
             if (terminei) {
                 atualizaBytesDaPasta();
                 return;
@@ -633,28 +603,7 @@ public class Pasta {
         }
 
         while (this.proxBloco != 0) {
-            RandomAccessFile bloco = new RandomAccessFile(hd, "r");
-            bloco.seek(this.proxBloco);
-
-            this.blocoPrimeiroArquivo = (short) bloco.readUnsignedShort();
-            this.segurancaPrimeiroArquivo = bloco.readByte();
-            this.nomePrimeiroArquivo = bloco.readByte();
-            this.nomeDonoPrimeiroArquivo = bloco.readByte();
-
-            this.blocoSegundoArquivo = (short) bloco.readUnsignedShort();
-            this.segurancaSegundoArquivo = bloco.readByte();
-            this.nomeSegundoArquivo = bloco.readByte();
-            this.nomeDonoSegundoArquivo = bloco.readByte();
-
-            this.blocoTerceiroArquivo = (short) bloco.readUnsignedShort();
-            this.segurancaTerceiroArquivo = bloco.readByte();
-            this.nomeTerceiroArquivo = bloco.readByte();
-            this.nomeDonoTerceiroArquivo = bloco.readByte();
-
-            this.filling = bloco.readByte();
-            this.proxBloco = (short) bloco.readUnsignedShort();
-            byteFinal = bloco.getFilePointer();
-            bloco.close();
+            leMaisBlocoDaPasta();
             if (nomeArq == getNomePrimeiroArquivo())  {
                 return this.getSegurancaPrimeiroArquivo();
             }
@@ -668,6 +617,135 @@ public class Pasta {
             }
 
     return 0;
+    }
+    
+    public int getNomeDonoArquivo( String nome) throws IOException {
+        if (nome.equals("")) {
+            return 0;
+        }
+        
+        byte nomeArq = (byte) (int)Integer.valueOf(nome);
+        if (nomeArq == getNomePrimeiroArquivo())  {
+            return this.getNomeDonoPrimeiroArquivo();
+        }
+        if (nomeArq == getNomeSegundoArquivo()){
+            return this.getNomeDonoSegundoArquivo();
+        }
+        if (nomeArq == getNomeTerceiroArquivo()) {
+            return this.getNomeDonoTerceiroArquivo();
+        }
+
+        while (this.proxBloco != 0) {
+            leMaisBlocoDaPasta();
+            if (nomeArq == getNomePrimeiroArquivo())  {
+                return this.getNomeDonoPrimeiroArquivo();
+            }
+            if (nomeArq == getNomeSegundoArquivo()){
+                return this.getNomeDonoSegundoArquivo();
+            }
+            if (nomeArq == getNomeTerceiroArquivo()) {
+                return this.getNomeDonoTerceiroArquivo();
+            }
+
+        }
+        
+        return 0;
+    }
+    
+    /*
+    
+        Métodos privados de uso exclusivo da propria classe.  
+     
+    */
+    
+    
+    private byte getNomeDonoPrimeiroArquivo() {
+        return nomeDonoPrimeiroArquivo;
+    }
+
+    private byte getNomeDonoSegundoArquivo() {
+        return nomeDonoSegundoArquivo;
+    }
+
+    private byte getNomeDonoTerceiroArquivo() {
+        return nomeDonoTerceiroArquivo;
+    }
+    
+    private void gravaBinarioNovaPasta(short blocoVazio, byte[] novaPasta) throws FileNotFoundException, IOException {
+        RandomAccessFile bloco = new RandomAccessFile(hd, "rw");
+        bloco.seek(blocoVazio);
+        bloco.write(novaPasta);
+        bloco.close();
+    }
+    
+    private void atualizaBytesDaPasta() throws FileNotFoundException, IOException {
+        RandomAccessFile bloco = new RandomAccessFile(hd, "rw");
+        bloco.seek(this.byteInicial);
+        bloco.writeShort(this.blocoPrimeiroArquivo);
+        bloco.writeByte(this.segurancaPrimeiroArquivo);
+        bloco.writeByte(this.nomePrimeiroArquivo);
+        bloco.writeByte(this.nomeDonoPrimeiroArquivo);
+        bloco.writeShort(this.blocoSegundoArquivo);
+        bloco.writeByte(this.segurancaSegundoArquivo);
+        bloco.writeByte(this.nomeSegundoArquivo);
+        bloco.writeByte(this.nomeDonoSegundoArquivo);
+        bloco.writeShort(this.blocoTerceiroArquivo);
+        bloco.writeByte(this.segurancaTerceiroArquivo);
+        bloco.writeByte(this.nomeTerceiroArquivo);
+        bloco.writeByte(this.nomeDonoTerceiroArquivo);
+        bloco.writeByte(this.filling);
+        bloco.close();
+    }
+    
+    private byte getNomePrimeiroArquivo() {
+        return nomePrimeiroArquivo;
+    }
+
+    private byte getNomeSegundoArquivo() {
+        return nomeSegundoArquivo;
+    }
+
+    private byte getNomeTerceiroArquivo() {
+        return nomeTerceiroArquivo;
+    }
+
+    private static int getTipoArquivo(byte seguranca) {
+        return (int) pegabit((char) seguranca, (char) 1);
+    }
+
+    private byte getSegurancaPrimeiroArquivo() {
+        return segurancaPrimeiroArquivo;
+    }
+
+    private byte getSegurancaSegundoArquivo() {
+        return segurancaSegundoArquivo;
+    }
+
+    private byte getSegurancaTerceiroArquivo() {
+        return segurancaTerceiroArquivo;
+    }
+    
+    private String segurancaFormatada( byte security) {
+        String permissoes = "rwx ";
+         
+        for (int i = 1; i < 7; i++) {
+            System.out.println("Bit " + i + " ->" + pegabit((char) security, (char) i) );
+        }
+        if( pegabit((char) security, (char) 1) != 0) permissoes = permissoes.concat("r");
+        else permissoes = permissoes.concat("-");
+        if( pegabit((char) security, (char) 1) != 0) permissoes = permissoes.concat("w");
+        else permissoes = permissoes.concat("-");
+        if( pegabit((char) security, (char) 1) != 0) permissoes = permissoes.concat("x");
+        else permissoes = permissoes.concat("-");
+        permissoes = permissoes.concat(" ");
+        if( pegabit((char) security, (char) 1) != 0) permissoes = permissoes.concat("r");
+        else permissoes = permissoes.concat("-");
+        if( pegabit((char) security, (char) 1) != 0) permissoes = permissoes.concat("w");
+        else permissoes = permissoes.concat("-");
+        if( pegabit((char) security, (char) 1) != 0) permissoes = permissoes.concat("x");
+        else permissoes = permissoes.concat("-");
+        
+        return permissoes;
     }
 
 }

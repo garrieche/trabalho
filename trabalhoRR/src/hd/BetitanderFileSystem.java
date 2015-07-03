@@ -17,59 +17,89 @@ public class BetitanderFileSystem {
     private File hd;
     private int tamHD;
     private byte[] vHD;
-    private byte user = 99 ;
-    
-   
-    
-    
+    private byte user;
+    private GU gu;
 
-    public BetitanderFileSystem() throws IOException {
+    public BetitanderFileSystem(GU gu) throws IOException {
         this.tamHD = (1024 * 18) + 128;
         this.vHD = new byte[this.tamHD];
         this.hd = new File("c:\\betitander.hd");
+        this.gu = gu;
+        this.user = (byte) gu.getLogado().getNome();
         if (!hd.exists()) {
             hd.createNewFile();
             formatar();
         }
     }
-    
-    public boolean getSegurança( String caminho , GU usuario , OperacaoSeguranca seg  ) throws IOException {
-     
-        Seguranca key;
-        switch (seg) {
-            case LER:
-               key = Seguranca.READ;
-               break;
-            case LISTAR:
-               key = Seguranca.READ;
-               break;
-            case ESCREVER:
-               key = Seguranca.WRITE;
-               break;    
-            case ALTERA_SEGURANCA:
-               key = Seguranca.WRITE;
-               break;
-            case CRIAR:
-               key = Seguranca.WRITE;
-               break;
-            case APAGAR:
-               key = Seguranca.WRITE;
-               break;
-        }
-        
+
+    public boolean getSegurança(String caminho, OperacaoSeguranca seg) throws IOException {
         short address = this.exist(caminho);
-        if (address == 0) return false;
-        Pasta localFolder = new Pasta( this.hd ,  address);
-        byte xSeguranca = localFolder.getSeguranca(caminho);
+        if (address == 0) {
+            return false;
+        }
+        Pasta localFolder = new Pasta(this.hd, address);
+        byte xSeguranca = localFolder.getSeguranca(this.getNomeEntidade(caminho));
+        int xDonoArquivo = localFolder.getNomeDonoArquivo(this.getNomeEntidade(caminho));
         
-        return true;
+        // Se for o dono do arquivo ou ROOT nem pede segurança.. libera tudo...
+        // =================================================================================
+        if (gu.getLogado().getNome() == xDonoArquivo || gu.getLogado().getNome() == 0) {
+            return true;
+        } else {
+            int modeSecurity = 0;
+            Seguranca key;
+            if (gu.estaNoGrupo(xDonoArquivo)) {
+                modeSecurity = 1;
+            }
+            //          NrwxrwxF 
+            //   Byte   11010000
+            //   bit    01234567
+
+            switch (seg) {
+                case LER:
+                    key = Seguranca.READ;
+                    return (modeSecurity == 1)
+                            ? (pegabit((char) xSeguranca, (char) 1) == 1)
+                            : (pegabit((char) xSeguranca, (char) 4) == 1);
+
+                case LISTAR:
+                    key = Seguranca.READ;
+                    return (modeSecurity == 1)
+                            ? (pegabit((char) xSeguranca, (char) 1) == 1)
+                            : (pegabit((char) xSeguranca, (char) 4) == 1);
+
+                case ESCREVER:
+                    key = Seguranca.WRITE;
+                    return (modeSecurity == 1)
+                            ? (pegabit((char) xSeguranca, (char) 2) == 1)
+                            : (pegabit((char) xSeguranca, (char) 5) == 1);
+                case ALTERA_SEGURANCA:
+                    key = Seguranca.WRITE;
+                    return (modeSecurity == 1)
+                            ? (pegabit((char) xSeguranca, (char) 2) == 1)
+                            : (pegabit((char) xSeguranca, (char) 5) == 1);
+                case CRIAR:
+                    key = Seguranca.WRITE;
+                    return (modeSecurity == 1)
+                            ? (pegabit((char) xSeguranca, (char) 2) == 1)
+                            : (pegabit((char) xSeguranca, (char) 5) == 1);
+                case APAGAR:
+                    key = Seguranca.WRITE;
+                    return (modeSecurity == 1)
+                            ? (pegabit((char) xSeguranca, (char) 2) == 1)
+                            : (pegabit((char) xSeguranca, (char) 5) == 1);
+                case EXECUTAR:
+                    key = Seguranca.EXECUTE;
+                    return (modeSecurity == 1)
+                            ? (pegabit((char) xSeguranca, (char) 3) == 1)
+                            : (pegabit((char) xSeguranca, (char) 6) == 1);
+            }
+        }
+        return false;
     }
-    
-    
-    
-    
+
     public void formatar() throws IOException {
-        
+
         for (int i = 1; i < 128; i++) {
             vHD[i] = 0;
         }
@@ -197,7 +227,7 @@ public class BetitanderFileSystem {
                 return false;
             }
             Pasta pastaExistente = new Pasta(hd, exist(caminhoFinal));
-            pastaExistente.novoArquivo(blocoInicial, splitado[splitado.length - 1]);
+            pastaExistente.novoArquivo(blocoInicial, splitado[splitado.length - 1], user);
         }
         return true;
     }
@@ -283,7 +313,7 @@ public class BetitanderFileSystem {
         paiPasta.apagaArquivo(splitado[splitado.length - 1]);
     }
 
-    static String xBinario(char valor) {
+    public static String xBinario(char valor) {
         String ret = "";
         for (int i = 0; i < 8; i++) {
             ret = String.valueOf((int) pegabit(valor, (char) i)) + ret;
@@ -309,7 +339,7 @@ public class BetitanderFileSystem {
         return 0;
     }
 
-    private static byte[] folder( byte usuario) {
+    private static byte[] folder(byte usuario) {
         byte[] folder = new byte[18];
 
         // =====================================================
@@ -317,35 +347,31 @@ public class BetitanderFileSystem {
         // =====================================================    
         folder[0] = 0;                   //  2 bytes
         folder[1] = 0;                   //  para bloco inicio  (0 = vazio ) 
-        folder[2] = (byte) seguranca(1,64);     //  1 Byte para Arquivo / Pasta e Seguranca
+        folder[2] = (byte) seguranca(1, 64);     //  1 Byte para Arquivo / Pasta e Seguranca
         folder[3] = 0;                   //  1 byte para nome do Arquivo
-        folder[4] = usuario  ;           //  1 Byte para dono do Arquivo
+        folder[4] = usuario;           //  1 Byte para dono do Arquivo
 
         // =====================================================
         // Arquivo 2
         // =====================================================      
-        
         folder[5] = 0;
         folder[6] = 0;
-        folder[7] = (byte) seguranca(1,64);
+        folder[7] = (byte) seguranca(1, 64);
         folder[8] = 0;
         folder[9] = usuario;
 
         // =====================================================
         // Arquivo 3
         // =====================================================      
-        
         folder[10] = 0;
         folder[11] = 0;
-        folder[12] = (byte) seguranca(1,64);
+        folder[12] = (byte) seguranca(1, 64);
         folder[13] = 0;
         folder[14] = usuario;
 
         // =====================================================
         // Filling
         // =====================================================  
-        
-       
         folder[15] = 0;   // filling
 
         // =====================================================
@@ -506,8 +532,8 @@ public class BetitanderFileSystem {
                     for (int t = 0; t < 16; t++) {
                         segCodigo[i] = arq.readByte();
                         if (segCodigo[i] == (byte) 15) {
-                        sairFor = true;
-                        i = t = 300;
+                            sairFor = true;
+                            i = t = 300;
                         }
                     }
                     if (!sairFor) {
@@ -545,7 +571,7 @@ public class BetitanderFileSystem {
                     return;
                 }
                 Pasta pastaExistente = new Pasta(hd, exist(caminhoFinalDestino));
-                pastaExistente.novoArquivo(blocoInicial, splitadoOrigem[splitadoOrigem.length - 1]);
+                pastaExistente.novoArquivo(blocoInicial, splitadoOrigem[splitadoOrigem.length - 1], user);
             }
             System.out.println("Arquivo copiado com exito!");
         }
@@ -586,11 +612,11 @@ public class BetitanderFileSystem {
                     return;
                 }
                 temEspacoNaPasta(caminhoPastaDestino);
-                
+
                 Pasta pastaOrigem = new Pasta(hd, exist(caminhoPastaOrigem));
                 Pasta pastaDestino = new Pasta(hd, exist(caminhoPastaDestino));
                 pastaOrigem.apagaArquivo(splitadoOrigem[splitadoOrigem.length]);
-                pastaDestino.novoArquivo(blocoOrigem, splitadoOrigem[splitadoOrigem.length]);
+                pastaDestino.novoArquivo(blocoOrigem, splitadoOrigem[splitadoOrigem.length], user);
             }
             System.out.println("Arquivo movido com exito!");
         }
@@ -600,11 +626,11 @@ public class BetitanderFileSystem {
         short blocoOrigem = exist(comando);
         String caminhoPasta = "";
         byte segCodigo[] = new byte[256];
-         if (blocoOrigem == 0) {
+        if (blocoOrigem == 0) {
             System.out.println("Arquivo ou Pasta Origem não encontrado.");
             segCodigo[0] = (byte) 15;
             return (segCodigo);
-            
+
         } else {
             String splitado[] = comando.split("/");
             for (int i = 1; i < splitado.length - 1; i++) {
@@ -614,46 +640,41 @@ public class BetitanderFileSystem {
             if (caminhoPasta.equals("")) {
                 caminhoPasta = "/";
             }
-                RandomAccessFile arq = new RandomAccessFile(hd, "rw");
-                arq.seek(blocoOrigem);
-                //byte segCodigo[] = new byte[256];
-                boolean sairFor = false;
-                for (int i = 0; i < 255; i++) {
-                    for (int t = 0; t < 16; t++) {
-                        segCodigo[i] = arq.readByte();
-                        if (segCodigo[i] == (byte) 15) {
+            RandomAccessFile arq = new RandomAccessFile(hd, "rw");
+            arq.seek(blocoOrigem);
+            //byte segCodigo[] = new byte[256];
+            boolean sairFor = false;
+            for (int i = 0; i < 255; i++) {
+                for (int t = 0; t < 16; t++) {
+                    segCodigo[i] = arq.readByte();
+                    if (segCodigo[i] == (byte) 15) {
                         sairFor = true;
                         i = t = 300;
-                        }
-                    }
-                    if (!sairFor) {
-                        short prox = arq.readShort();
-                        arq.seek(prox);
                     }
                 }
-         }
-         return segCodigo;
+                if (!sairFor) {
+                    short prox = arq.readShort();
+                    arq.seek(prox);
+                }
+            }
+        }
+        return segCodigo;
     }
-    
-    public byte getNomeEntidade( String caminho) throws IOException {
+
+    private String getNomeEntidade(String caminho) throws IOException {
         if (caminho == null) {
-            return 0;
+            return "0";
         }
         if (caminho.length() == 1 && caminho.charAt(0) != '/') {
-            return 0;
+            return "0";
         }
         if (caminho.length() == 1 && caminho.charAt(0) == '/') {
-            return 0;
+            return "0";
         }
-
-        String tempPath = "";
-        Pasta pastaRaiz = new Pasta(hd, 128);
-        boolean navegou = false;
-        byte retorno = 0;
         String splitado[] = caminho.split("/");
-        String nomeArq = splitado[splitado.length-1];
-        retorno = (byte) (int) Integer.valueOf(nomeArq);
-            
-        return (byte)retorno;
+        String nomeArq = splitado[splitado.length - 1];
+        //retorno = (byte) (int) Integer.valueOf(nomeArq);
+
+        return nomeArq;
     }
 }

@@ -10,5 +10,5 @@ package hd;
  * @author Jair
  */
 public enum OperacaoSeguranca {
-    LER , LISTAR, ESCREVER, ALTERAR , CRIAR, APAGAR, ALTERA_SEGURANCA
+    LER , LISTAR, ESCREVER, ALTERAR , CRIAR, APAGAR, ALTERA_SEGURANCA, EXECUTAR
 }

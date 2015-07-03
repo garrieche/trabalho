@@ -2,6 +2,7 @@ package shell;
 
 import GU.GU;
 import hd.BetitanderFileSystem;
+import hd.OperacaoSeguranca;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class CommandosLibrary {
 
     public CommandosLibrary(GU gu) throws IOException {
         this.gu = gu;
-        this.SO = new BetitanderFileSystem();
+        this.SO = new BetitanderFileSystem( gu );
         this.dirAtual = "/";
     }
     
@@ -44,7 +45,9 @@ public class CommandosLibrary {
                 break;
             case "rd":
                 if (comando.length > 1)
-                   removeDirectory( comando[1]);
+                   if ( SO.getSegurança(cmd, OperacaoSeguranca.APAGAR))
+                        removeDirectory( comando[1]);
+                   else System.out.println("Sem permissão de usuario para operacao.");
                 else retorno = "Parametros Faltantes ou Inexistentes.";
                 break;
             case "ma":
