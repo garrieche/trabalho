@@ -2,7 +2,6 @@ package shell;
 
 import GU.GU;
 import hd.BetitanderFileSystem;
-import hd.OperacaoSeguranca;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

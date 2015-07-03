@@ -63,8 +63,8 @@ public class Bits {
     }
     
     public static char seguranca( int arqPasta, int permissao) {
-        if( permissao < 0 || permissao >77){ 
-            System.out.println("Permissao não acessivel");
+        if( permissao <= 0 || permissao >=77){ 
+            System.out.println("Permissao invalida");
             return 0;
         }
         byte xSeguranca;
@@ -72,8 +72,9 @@ public class Bits {
         else xSeguranca = (byte) 10000000;
         
         char[] param = String.valueOf(permissao).toCharArray();
-        
-        switch ((int) param[0]) {
+        int grupo = (int) Integer.valueOf( String.valueOf(param[0]));
+        int outros = (int) Integer.valueOf( String.valueOf(param[1]));
+        switch (grupo) {
             case 0:
                 xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 1 , (char) 0 );
                 xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 2 , (char) 0 );
@@ -115,7 +116,7 @@ public class Bits {
                 xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 3 , (char) 1 );
                 break;
         }
-        switch ((int) param[1]) {
+        switch (outros) {
             case 0:
                 xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 4 , (char) 0 );
                 xSeguranca = (byte) mudabit( (char) xSeguranca, (char) 5 , (char) 0 );

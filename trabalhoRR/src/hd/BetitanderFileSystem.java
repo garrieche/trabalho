@@ -17,10 +17,9 @@ public class BetitanderFileSystem {
     private File hd;
     private int tamHD;
     private byte[] vHD;
+    private byte user = 99 ;
     
-    private GU user ;
-    private int permUser = 777;
-    private int permOutros = 777;
+   
     
     
 
@@ -79,7 +78,7 @@ public class BetitanderFileSystem {
         }
         vHD[0] = (byte) 10000000;
         for (int i = 128; i < 128 + 18; i++) {
-            this.vHD[i] = folder()[i - 128];
+            this.vHD[i] = folder(this.user)[i - 128];
         }
         RandomAccessFile formatar = new RandomAccessFile(hd, "rw");
         for (int i = 0; i < this.tamHD; i++) {
@@ -121,7 +120,7 @@ public class BetitanderFileSystem {
                 return false;
             }
             temEspacoNaPasta(caminhoFinal);
-            byte[] novaPasta = folder();
+            byte[] novaPasta = folder(this.user);
             Pasta pastaExistente = new Pasta(hd, exist(caminhoFinal));
             blocoVazio = getBlocoVazio();
             if (blocoVazio > 0) {
@@ -310,7 +309,7 @@ public class BetitanderFileSystem {
         return 0;
     }
 
-    private static byte[] folder() {
+    private static byte[] folder( byte usuario) {
         byte[] folder = new byte[18];
 
         // =====================================================
@@ -318,9 +317,9 @@ public class BetitanderFileSystem {
         // =====================================================    
         folder[0] = 0;                   //  2 bytes
         folder[1] = 0;                   //  para bloco inicio  (0 = vazio ) 
-        folder[2] = (byte) seguranca(1,700);     //  1 Byte para Arquivo / Pasta e Seguranca
+        folder[2] = (byte) seguranca(1,64);     //  1 Byte para Arquivo / Pasta e Seguranca
         folder[3] = 0;                   //  1 byte para nome do Arquivo
-        folder[4] = 0;                   //  1 Byte para dono do Arquivo
+        folder[4] = usuario  ;           //  1 Byte para dono do Arquivo
 
         // =====================================================
         // Arquivo 2
@@ -328,9 +327,9 @@ public class BetitanderFileSystem {
         
         folder[5] = 0;
         folder[6] = 0;
-        folder[7] = (byte) seguranca(1,700);
+        folder[7] = (byte) seguranca(1,64);
         folder[8] = 0;
-        folder[9] = 0;
+        folder[9] = usuario;
 
         // =====================================================
         // Arquivo 3
@@ -338,9 +337,9 @@ public class BetitanderFileSystem {
         
         folder[10] = 0;
         folder[11] = 0;
-        folder[12] = (byte) seguranca(1,700);
+        folder[12] = (byte) seguranca(1,64);
         folder[13] = 0;
-        folder[14] = 0;
+        folder[14] = usuario;
 
         // =====================================================
         // Filling
@@ -431,7 +430,7 @@ public class BetitanderFileSystem {
         }
         if (minhaPasta.estaCheia() && minhaPasta.getProxBloco() == 0) {
             short blocoExtendePasta = getBlocoVazio();
-            minhaPasta.expande(blocoExtendePasta, folder());
+            minhaPasta.expande(blocoExtendePasta, folder(this.user));
         }
 
     }
@@ -605,6 +604,7 @@ public class BetitanderFileSystem {
             System.out.println("Arquivo ou Pasta Origem não encontrado.");
             segCodigo[0] = (byte) 15;
             return (segCodigo);
+            
         } else {
             String splitado[] = comando.split("/");
             for (int i = 1; i < splitado.length - 1; i++) {
@@ -633,5 +633,27 @@ public class BetitanderFileSystem {
                 }
          }
          return segCodigo;
+    }
+    
+    public byte getNomeEntidade( String caminho) throws IOException {
+        if (caminho == null) {
+            return 0;
+        }
+        if (caminho.length() == 1 && caminho.charAt(0) != '/') {
+            return 0;
+        }
+        if (caminho.length() == 1 && caminho.charAt(0) == '/') {
+            return 0;
+        }
+
+        String tempPath = "";
+        Pasta pastaRaiz = new Pasta(hd, 128);
+        boolean navegou = false;
+        byte retorno = 0;
+        String splitado[] = caminho.split("/");
+        String nomeArq = splitado[splitado.length-1];
+        retorno = (byte) (int) Integer.valueOf(nomeArq);
+            
+        return (byte)retorno;
     }
 }
