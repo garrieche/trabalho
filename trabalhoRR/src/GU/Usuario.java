@@ -1,14 +1,15 @@
 package GU;
 
+import java.util.ArrayList;
+
 public class Usuario {
 
     private int nome;
-    private int[] grupos;
+    ArrayList<Integer> grupos = new ArrayList<>();
 
-    public Usuario(int nome, int[] grupos) {
-
+    public Usuario(int nome, int grupos) {
         this.nome = nome;
-        this.grupos = grupos;
+        this.grupos.add(grupos);
     }
 
     public int getNome() {
@@ -19,11 +20,8 @@ public class Usuario {
         this.nome = nome;
     }
 
-    public int[] getGrupos() {
+    public ArrayList<Integer> getGrupos() {
         return grupos;
     }
 
-    public void setGrupos(int[] grupos) {
-        this.grupos = grupos;
-    }
 }

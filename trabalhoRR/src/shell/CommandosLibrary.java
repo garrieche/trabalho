@@ -1,5 +1,6 @@
 package shell;
 
+import GU.GU;
 import hd.BetitanderFileSystem;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,8 +10,10 @@ import java.util.List;
 public class CommandosLibrary {
     private String dirAtual; 
     private BetitanderFileSystem SO;  
+    private GU gu;
 
-    public CommandosLibrary() throws IOException {
+    public CommandosLibrary(GU gu) throws IOException {
+        this.gu = gu;
         this.SO = new BetitanderFileSystem();
         this.dirAtual = "/";
     }
@@ -64,6 +67,47 @@ public class CommandosLibrary {
                     moveArchive(comando[1], comando[2]);
                 else retorno = "Parametros Faltantes ou Inexistentes.";
                 break;
+                /*
+                cu A (apenas root)
+                cria o usuário A
+
+                ru A (apenas root)
+                apaga o usuário A
+
+                gu A +B (apenas root)
+                associa o usuário A ao grupo B
+
+                gu A -B (apenas root)
+                desassocia o usuário A ao grupo B
+                
+                */
+            case "cu":
+                if (gu.getLogado().getNome() == 0 ) {
+                if (comando.length == 2) 
+                    gu.addUser(comando[1]);
+                else retorno = "Parametros Faltantes ou Inexistentes.";
+                break;
+                } else {
+                    System.out.println("você nao tem permissão!");
+                }
+            case "ru":
+                if (gu.getLogado().getNome() == 0 ) {
+                if (comando.length == 2) 
+                    gu.delUser(comando[1]);
+                else retorno = "Parametros Faltantes ou Inexistentes.";
+                break;
+                } else {
+                    System.out.println("você nao tem permissão!");
+                }
+            case "gu":
+                if (gu.getLogado().getNome() == 0 ) {
+                if (comando.length == 3) 
+                    gu.alteraGrupo(comando[1], comando[2]);
+                else retorno = "Parametros Faltantes ou Inexistentes.";
+                break;
+                } else {
+                    System.out.println("você nao tem permissão!");
+                }
             default:
                 System.out.println("comando Invalido!");
                 System.out.println("comandos disponiveis: \n"
