@@ -6,8 +6,8 @@ public class teste {
 
     public static void main(String args[]) throws IOException {
         
-//        BetitanderFileSystem discoC = new BetitanderFileSystem();
-//        discoC.formatar();
+       BetitanderFileSystem discoC = new BetitanderFileSystem();
+        discoC.formatar();
 //        for (int i = 1; i < 16; i++) {
 //            String pastinha = "/"+i;
 //            System.out.println("Criando a pastinha -> " + pastinha);

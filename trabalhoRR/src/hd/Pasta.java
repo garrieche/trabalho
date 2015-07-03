@@ -615,13 +615,59 @@ public class Pasta {
         return;
     }
 
-    public byte getSeguranca(String caminho) {
+    public byte getSeguranca(String tempPath) throws IOException {
     
-        
-        
-        
-        
-        return 1;
+        if (tempPath.equals("")) {
+            return 0;
+        }
+        int pasta = (int) Integer.valueOf(tempPath);
+        byte nomeArq = (byte) pasta;
+        if (nomeArq == getNomePrimeiroArquivo())  {
+            return this.getSegurancaPrimeiroArquivo();
+        }
+        if (nomeArq == getNomeSegundoArquivo()){
+            return this.getSegurancaSegundoArquivo();
+        }
+        if (nomeArq == getNomeTerceiroArquivo()) {
+            return this.getSegurancaTerceiroArquivo();
+        }
+
+        while (this.proxBloco != 0) {
+            RandomAccessFile bloco = new RandomAccessFile(hd, "r");
+            bloco.seek(this.proxBloco);
+
+            this.blocoPrimeiroArquivo = (short) bloco.readUnsignedShort();
+            this.segurancaPrimeiroArquivo = bloco.readByte();
+            this.nomePrimeiroArquivo = bloco.readByte();
+            this.nomeDonoPrimeiroArquivo = bloco.readByte();
+
+            this.blocoSegundoArquivo = (short) bloco.readUnsignedShort();
+            this.segurancaSegundoArquivo = bloco.readByte();
+            this.nomeSegundoArquivo = bloco.readByte();
+            this.nomeDonoSegundoArquivo = bloco.readByte();
+
+            this.blocoTerceiroArquivo = (short) bloco.readUnsignedShort();
+            this.segurancaTerceiroArquivo = bloco.readByte();
+            this.nomeTerceiroArquivo = bloco.readByte();
+            this.nomeDonoTerceiroArquivo = bloco.readByte();
+
+            this.filling = bloco.readByte();
+            this.proxBloco = (short) bloco.readUnsignedShort();
+            byteFinal = bloco.getFilePointer();
+            bloco.close();
+            if (nomeArq == getNomePrimeiroArquivo())  {
+                return this.getSegurancaPrimeiroArquivo();
+            }
+            if (nomeArq == getNomeSegundoArquivo()){
+                return this.getSegurancaSegundoArquivo();
+            }
+            if (nomeArq == getNomeTerceiroArquivo()) {
+                return this.getSegurancaTerceiroArquivo();
+            }
+
+            }
+
+    return 0;
     }
 
 }

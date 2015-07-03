@@ -605,6 +605,7 @@ public class BetitanderFileSystem {
             System.out.println("Arquivo ou Pasta Origem não encontrado.");
             segCodigo[0] = (byte) 15;
             return (segCodigo);
+            
         } else {
             String splitado[] = comando.split("/");
             for (int i = 1; i < splitado.length - 1; i++) {
@@ -633,5 +634,25 @@ public class BetitanderFileSystem {
                 }
          }
          return segCodigo;
+    }
+    
+    private byte getNomeEntidade( String caminho) throws IOException {
+        if (caminho == null) {
+            return 0;
+        }
+        if (caminho.length() == 1 && caminho.charAt(0) != '/') {
+            return 0;
+        }
+        if (caminho.length() == 1 && caminho.charAt(0) == '/') {
+            return 0;
+        }
+
+        String tempPath = "";
+        Pasta pastaRaiz = new Pasta(hd, 128);
+        boolean navegou = false;
+        byte retorno = 0;
+        String splitado[] = caminho.split("/");
+            
+        return 0;
     }
 }
