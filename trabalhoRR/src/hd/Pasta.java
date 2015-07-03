@@ -67,7 +67,7 @@ public class Pasta {
 
     public void gravaNovaPasta(short blocoVazio, byte[] novaPasta, String nome) throws FileNotFoundException, IOException {
         boolean terminei = false;
-        byte xSeguranca = (byte) seguranca( this.PASTA, 700);
+        byte xSeguranca = (byte) seguranca( this.PASTA, 64);
         if (this.blocoPrimeiroArquivo == 0) {
             this.blocoPrimeiroArquivo = blocoVazio;
             this.nomePrimeiroArquivo = (byte) (int) Integer.valueOf(nome);
