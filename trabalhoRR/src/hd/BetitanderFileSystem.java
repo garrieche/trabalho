@@ -21,6 +21,8 @@ public class BetitanderFileSystem {
     private GU user ;
     private int permUser = 777;
     private int permOutros = 777;
+    
+    
 
     public BetitanderFileSystem() throws IOException {
         this.tamHD = (1024 * 18) + 128;
@@ -31,7 +33,42 @@ public class BetitanderFileSystem {
             formatar();
         }
     }
-
+    
+    public boolean getSegurança( String caminho , GU usuario , OperacaoSeguranca seg  ) throws IOException {
+     
+        Seguranca key;
+        switch (seg) {
+            case LER:
+               key = Seguranca.READ;
+               break;
+            case LISTAR:
+               key = Seguranca.READ;
+               break;
+            case ESCREVER:
+               key = Seguranca.WRITE;
+               break;    
+            case ALTERA_SEGURANCA:
+               key = Seguranca.WRITE;
+               break;
+            case CRIAR:
+               key = Seguranca.WRITE;
+               break;
+            case APAGAR:
+               key = Seguranca.WRITE;
+               break;
+        }
+        
+        short address = this.exist(caminho);
+        if (address == 0) return false;
+        Pasta localFolder = new Pasta( this.hd ,  address);
+        byte xSeguranca = localFolder.getSeguranca(caminho);
+        
+        return true;
+    }
+    
+    
+    
+    
     public void formatar() throws IOException {
         
         for (int i = 1; i < 128; i++) {
@@ -281,7 +318,7 @@ public class BetitanderFileSystem {
         // =====================================================    
         folder[0] = 0;                   //  2 bytes
         folder[1] = 0;                   //  para bloco inicio  (0 = vazio ) 
-        folder[2] = (byte) seguranca(1,64);     //  1 Byte para Arquivo / Pasta e Seguranca
+        folder[2] = (byte) seguranca(1,700);     //  1 Byte para Arquivo / Pasta e Seguranca
         folder[3] = 0;                   //  1 byte para nome do Arquivo
         folder[4] = 0;                   //  1 Byte para dono do Arquivo
 
@@ -291,7 +328,7 @@ public class BetitanderFileSystem {
         
         folder[5] = 0;
         folder[6] = 0;
-        folder[7] = (byte) seguranca(1,64);
+        folder[7] = (byte) seguranca(1,700);
         folder[8] = 0;
         folder[9] = 0;
 
@@ -301,7 +338,7 @@ public class BetitanderFileSystem {
         
         folder[10] = 0;
         folder[11] = 0;
-        folder[12] = (byte) seguranca(1,64);
+        folder[12] = (byte) seguranca(1,700);
         folder[13] = 0;
         folder[14] = 0;
 

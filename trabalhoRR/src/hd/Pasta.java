@@ -1,6 +1,7 @@
 package hd;
 
 import static hd.Bits.pegabit;
+import static hd.Bits.seguranca;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,6 +29,9 @@ public class Pasta {
     private long byteFinal;
     private long byteInicial;
     private File hd;
+    
+    private final int ARQUIVO = 1 ;
+    private final int PASTA = 0;
 
     public short getProxBloco() {
         return proxBloco;
@@ -63,23 +67,23 @@ public class Pasta {
 
     public void gravaNovaPasta(short blocoVazio, byte[] novaPasta, String nome) throws FileNotFoundException, IOException {
         boolean terminei = false;
-
+        byte xSeguranca = (byte) seguranca( this.PASTA, 700);
         if (this.blocoPrimeiroArquivo == 0) {
             this.blocoPrimeiroArquivo = blocoVazio;
             this.nomePrimeiroArquivo = (byte) (int) Integer.valueOf(nome);
-            this.segurancaPrimeiroArquivo = 0;
+            this.segurancaPrimeiroArquivo = xSeguranca;
             terminei = true;
         } else {
             if (this.blocoSegundoArquivo == 0) {
                 this.blocoSegundoArquivo = blocoVazio;
                 this.nomeSegundoArquivo = (byte) (int) Integer.valueOf(nome);
-                this.segurancaSegundoArquivo = 0;
+                this.segurancaSegundoArquivo = xSeguranca;
                 terminei = true;
             } else {
                 if (this.blocoTerceiroArquivo == 0) {
                     this.blocoTerceiroArquivo = blocoVazio;
                     this.nomeTerceiroArquivo = (byte) (int) Integer.valueOf(nome);
-                    this.segurancaTerceiroArquivo = 0;
+                    this.segurancaTerceiroArquivo = xSeguranca;
                     terminei = true;
                 } else {
 //                    if (this.blocoQuartoArquivo == 0) {
@@ -101,19 +105,19 @@ public class Pasta {
             if (this.blocoPrimeiroArquivo == 0) {
                 this.blocoPrimeiroArquivo = blocoVazio;
                 this.nomePrimeiroArquivo = (byte) (int) Integer.valueOf(nome);
-                this.segurancaPrimeiroArquivo = 0;
+                this.segurancaPrimeiroArquivo = xSeguranca;
                 terminei = true;
             } else {
                 if (this.blocoSegundoArquivo == 0) {
                     this.blocoSegundoArquivo = blocoVazio;
                     this.nomeSegundoArquivo = (byte) (int) Integer.valueOf(nome);
-                    this.segurancaSegundoArquivo = 0;
+                    this.segurancaSegundoArquivo = xSeguranca;
                     terminei = true;
                 } else {
                     if (this.blocoTerceiroArquivo == 0) {
                         this.blocoTerceiroArquivo = blocoVazio;
                         this.nomeTerceiroArquivo = (byte) (int) Integer.valueOf(nome);
-                        this.segurancaTerceiroArquivo = 0;
+                        this.segurancaTerceiroArquivo = xSeguranca;
                         terminei = true;
                     } else {
 //                        if (this.blocoQuartoArquivo == 0) {
@@ -139,13 +143,13 @@ public class Pasta {
         }
         int pasta = (int) Integer.valueOf(tempPath);
         byte p = (byte) pasta;
-        if (p == getNomePrimeiroArquivo() && getSegurancaPrimeiroArquivo() == 0) {
+        if (p == getNomePrimeiroArquivo() && getTipoArquivo(getSegurancaPrimeiroArquivo()) == this.PASTA) {
             return true;
         }
-        if (p == getNomeSegundoArquivo() && getSegurancaSegundoArquivo() == 0) {
+        if (p == getNomeSegundoArquivo() && getTipoArquivo(getSegurancaSegundoArquivo()) == this.PASTA) {
             return true;
         }
-        if (p == getNomeTerceiroArquivo() && getSegurancaTerceiroArquivo() == 0) {
+        if (p == getNomeTerceiroArquivo() && getTipoArquivo(getSegurancaTerceiroArquivo()) == this.PASTA) {
             return true;
         }
 
@@ -172,13 +176,13 @@ public class Pasta {
             this.proxBloco = (short) bloco.readUnsignedShort();
             byteFinal = bloco.getFilePointer();
             bloco.close();
-            if (p == getNomePrimeiroArquivo() && getSegurancaPrimeiroArquivo() == 0) {
+            if (p == getNomePrimeiroArquivo() && getTipoArquivo(getSegurancaPrimeiroArquivo()) == this.PASTA) {
                 return true;
             }
-            if (p == getNomeSegundoArquivo() && getSegurancaSegundoArquivo() == 0) {
+            if (p == getNomeSegundoArquivo() && getTipoArquivo(getSegurancaSegundoArquivo()) == this.PASTA) {
                 return true;
             }
-            if (p == getNomeTerceiroArquivo() && getSegurancaTerceiroArquivo() == 0) {
+            if (p == getNomeTerceiroArquivo() && getTipoArquivo(getSegurancaTerceiroArquivo()) == this.PASTA) {
                 return true;
             }
 
@@ -252,13 +256,13 @@ public class Pasta {
         }
         int pasta = (int) Integer.valueOf(tempPath);
         byte p = (byte) pasta;
-        if (p == getNomePrimeiroArquivo() && getSegurancaPrimeiroArquivo() == 0) {
+        if (p == getNomePrimeiroArquivo() && getTipoArquivo(getSegurancaPrimeiroArquivo()) == this.PASTA) {
             return this.blocoPrimeiroArquivo;
         }
-        if (p == getNomeSegundoArquivo() && getSegurancaSegundoArquivo() == 0) {
+        if (p == getNomeSegundoArquivo() && getTipoArquivo(getSegurancaSegundoArquivo()) == this.PASTA) {
             return this.blocoSegundoArquivo;
         }
-        if (p == getNomeTerceiroArquivo() && getSegurancaTerceiroArquivo() == 0) {
+        if (p == getNomeTerceiroArquivo() && getTipoArquivo(getSegurancaTerceiroArquivo()) == this.PASTA) {
             return this.blocoTerceiroArquivo;
         }
 
@@ -285,13 +289,13 @@ public class Pasta {
             this.proxBloco = (short) bloco.readUnsignedShort();
             byteFinal = bloco.getFilePointer();
             bloco.close();
-            if (p == getNomePrimeiroArquivo() && getSegurancaPrimeiroArquivo() == 0) {
-                return this.blocoPrimeiroArquivo;
+            if (p == getNomePrimeiroArquivo() && getTipoArquivo(getSegurancaPrimeiroArquivo()) == this.PASTA) {
+            return this.blocoPrimeiroArquivo;
             }
-            if (p == getNomeSegundoArquivo() && getSegurancaSegundoArquivo() == 0) {
+            if (p == getNomeSegundoArquivo() && getTipoArquivo(getSegurancaSegundoArquivo()) == this.PASTA) {
                 return this.blocoSegundoArquivo;
             }
-            if (p == getNomeTerceiroArquivo() && getSegurancaTerceiroArquivo() == 0) {
+            if (p == getNomeTerceiroArquivo() && getTipoArquivo(getSegurancaTerceiroArquivo()) == this.PASTA) {
                 return this.blocoTerceiroArquivo;
             }
 
@@ -305,25 +309,25 @@ public class Pasta {
         //if (this.existeSubPasta(splitado)) {
         //se sim, existe apaga
         boolean terminei = false;
-
+        byte xSeguranca = (byte) seguranca( this.ARQUIVO , 700);
         int pasta = (int) Integer.valueOf(splitado);
         byte p = (byte) pasta;
-        if (p == getNomePrimeiroArquivo() && getTipoArquivo(getSegurancaPrimeiroArquivo()) == 0) {
+        if (p == getNomePrimeiroArquivo() && getTipoArquivo(getSegurancaPrimeiroArquivo()) == this.PASTA) {
             this.blocoPrimeiroArquivo = 0;
             this.nomePrimeiroArquivo = 0;
-            this.segurancaPrimeiroArquivo = (byte) 10000000;
+            this.segurancaPrimeiroArquivo = xSeguranca;
             terminei = true;
         }
-        if (p == getNomeSegundoArquivo() && getTipoArquivo(getSegurancaSegundoArquivo()) == 0) {
+        if (p == getNomeSegundoArquivo() && getTipoArquivo(getSegurancaSegundoArquivo()) == this.PASTA) {
             this.blocoSegundoArquivo = 0;
             this.nomeSegundoArquivo = 0;
-            this.segurancaSegundoArquivo = (byte) 10000000;
+            this.segurancaSegundoArquivo = xSeguranca;
             terminei = true;
         }
-        if (p == getNomeTerceiroArquivo() && getTipoArquivo(getSegurancaTerceiroArquivo()) == 0) {
+        if (p == getNomeTerceiroArquivo() && getTipoArquivo(getSegurancaTerceiroArquivo()) == this.PASTA) {
             this.blocoTerceiroArquivo = 0;
             this.nomeTerceiroArquivo = 0;
-            this.segurancaTerceiroArquivo = (byte) 10000000;
+            this.segurancaTerceiroArquivo = xSeguranca;
             terminei = true;
         }
 //        if (p == getNomeQuartoArquivo() && getSegurancaQuartoArquivo() == 0) {
@@ -340,22 +344,22 @@ public class Pasta {
         while (this.proxBloco != 0) {
             leMaisBlocoDaPasta();
 
-            if (p == getNomePrimeiroArquivo() && getTipoArquivo(getSegurancaPrimeiroArquivo()) == 0) {
+            if (p == getNomePrimeiroArquivo() && getTipoArquivo(getSegurancaPrimeiroArquivo()) == this.PASTA) {
                 this.blocoPrimeiroArquivo = 0;
                 this.nomePrimeiroArquivo = 0;
-                this.segurancaPrimeiroArquivo = (byte) 10000000;
+                this.segurancaPrimeiroArquivo = xSeguranca;
                 terminei = true;
             }
-            if (p == getNomeSegundoArquivo() && getTipoArquivo(getSegurancaSegundoArquivo()) == 0) {
+            if (p == getNomeSegundoArquivo() && getTipoArquivo(getSegurancaSegundoArquivo()) == this.PASTA) {
                 this.blocoSegundoArquivo = 0;
                 this.nomeSegundoArquivo = 0;
-                this.segurancaSegundoArquivo = (byte) 10000000;
+                this.segurancaSegundoArquivo = xSeguranca;
                 terminei = true;
             }
-            if (p == getNomeTerceiroArquivo() && getTipoArquivo(getSegurancaTerceiroArquivo()) == 0) {
+            if (p == getNomeTerceiroArquivo() && getTipoArquivo(getSegurancaTerceiroArquivo()) == this.PASTA) {
                 this.blocoTerceiroArquivo = 0;
                 this.nomeTerceiroArquivo = 0;
-                this.segurancaTerceiroArquivo = (byte) 10000000;
+                this.segurancaTerceiroArquivo = xSeguranca;
                 terminei = true;
             }
             if (terminei) {
@@ -370,62 +374,44 @@ public class Pasta {
 
     public boolean estaVazia() throws IOException {
         boolean vazia = true;
-
         byte p = (byte) 0;
-        if (p < blocoPrimeiroArquivo && getTipoArquivo(getSegurancaPrimeiroArquivo()) == 0) {
-            vazia = false;
-            return vazia;
-        } else {
-            if (p < blocoSegundoArquivo && getTipoArquivo(getSegurancaSegundoArquivo()) == 0) {
-                vazia = false;
-                return vazia;
-            } else {
-                if (p < blocoTerceiroArquivo && getTipoArquivo(getSegurancaTerceiroArquivo()) == 0) {
-                    vazia = false;
-                    return vazia;
-                }
-            }
-        }
+        if ( blocoPrimeiroArquivo == 0 && 
+             blocoSegundoArquivo  == 0 &&
+             blocoTerceiroArquivo == 0 &&  
+             proxBloco == 0   ) return true ;
+        
         while (this.proxBloco != 0) {
             leMaisBlocoDaPasta();
-
-            if (p < blocoPrimeiroArquivo && getTipoArquivo(getSegurancaPrimeiroArquivo()) == 0) {
-                vazia = false;
-                return vazia;
-            } else {
-                if (p < blocoSegundoArquivo && getTipoArquivo(getSegurancaSegundoArquivo()) == 0) {
-                    vazia = false;
-                    return vazia;
-                } else {
-                    if (p < blocoTerceiroArquivo && getTipoArquivo(getSegurancaTerceiroArquivo()) == 0) {
-                        vazia = false;
-                        return vazia;
-                    }
-                }
-            }
+            if ( blocoPrimeiroArquivo == 0 && 
+                 blocoSegundoArquivo  == 0 &&
+                 blocoTerceiroArquivo == 0 &&  
+                 proxBloco == 0   ) return true ;
+            if ( !(blocoPrimeiroArquivo == 0 && 
+                 blocoSegundoArquivo  == 0 &&
+                 blocoTerceiroArquivo == 0) ) return false;
         }
-        return true;
+        return false;
     }
 
     public void mostraPasta() throws IOException {
 
         if (getNomePrimeiroArquivo() > 0) {
             String pasta = "";
-            if (getTipoArquivo(this.segurancaPrimeiroArquivo) == 0) {
+            if (getTipoArquivo(this.segurancaPrimeiroArquivo) == this.PASTA) {
                 pasta = "/";
             }
             System.out.println(pasta + this.nomePrimeiroArquivo);
         }
         if (getNomeSegundoArquivo() > 0) {
             String pasta = "";
-            if (getTipoArquivo(this.segurancaSegundoArquivo) == 0) {
+            if (getTipoArquivo(this.segurancaSegundoArquivo) == this.PASTA) {
                 pasta = "/";
             }
             System.out.println(pasta + this.nomeSegundoArquivo);
         }
         if (getNomeTerceiroArquivo() > 0) {
             String pasta = "";
-            if (getTipoArquivo(this.segurancaTerceiroArquivo) == 0) {
+            if (getTipoArquivo(this.segurancaTerceiroArquivo) == this.PASTA) {
                 pasta = "/";
             }
             System.out.println(pasta + this.nomeTerceiroArquivo);
@@ -435,21 +421,21 @@ public class Pasta {
             leMaisBlocoDaPasta();
             if (getNomePrimeiroArquivo() > 0) {
             String pasta = "";
-            if (getTipoArquivo(this.segurancaPrimeiroArquivo) == 0) {
+            if (getTipoArquivo(this.segurancaPrimeiroArquivo) == this.PASTA) {
                 pasta = "/";
             }
             System.out.println(pasta + this.nomePrimeiroArquivo);
         }
         if (getNomeSegundoArquivo() > 0) {
             String pasta = "";
-            if (getTipoArquivo(this.segurancaSegundoArquivo) == 0) {
+            if (getTipoArquivo(this.segurancaSegundoArquivo) == this.PASTA) {
                 pasta = "/";
             }
             System.out.println(pasta + this.nomeSegundoArquivo);
         }
         if (getNomeTerceiroArquivo() > 0) {
             String pasta = "";
-            if (getTipoArquivo(this.segurancaTerceiroArquivo) == 0) {
+            if (getTipoArquivo(this.segurancaTerceiroArquivo) == this.PASTA) {
                 pasta = "/";
             }
             System.out.println(pasta + this.nomeTerceiroArquivo);
@@ -514,24 +500,24 @@ public class Pasta {
     public void novoArquivo(short blocoVazio, String nome) throws IOException {
             // TODO  Implementar Segurança posteriormente.
             //       Preciso pegar o usuario para terminar este metodo.
-        
+        byte xSeguranca = (byte) seguranca(1,700);
         boolean terminei = false;
         if (this.blocoPrimeiroArquivo == 0) {
             this.blocoPrimeiroArquivo = blocoVazio;
             this.nomePrimeiroArquivo = (byte) (int) Integer.valueOf(nome);
-            this.segurancaPrimeiroArquivo = (byte) 10000000;
+            this.segurancaPrimeiroArquivo = xSeguranca;
             terminei = true;
         } else {
             if (this.blocoSegundoArquivo == 0) {
                 this.blocoSegundoArquivo = blocoVazio;
                 this.nomeSegundoArquivo = (byte) (int) Integer.valueOf(nome);
-                this.segurancaSegundoArquivo = (byte) 10000000;
+                this.segurancaSegundoArquivo = xSeguranca;
                 terminei = true;
             } else {
                 if (this.blocoTerceiroArquivo == 0) {
                     this.blocoTerceiroArquivo = blocoVazio;
                     this.nomeTerceiroArquivo = (byte) (int) Integer.valueOf(nome);
-                    this.segurancaTerceiroArquivo = (byte) 10000000;
+                    this.segurancaTerceiroArquivo = xSeguranca;
                     terminei = true;
                 } 
             }
@@ -545,19 +531,19 @@ public class Pasta {
             if (this.blocoPrimeiroArquivo == 0) {
                 this.blocoPrimeiroArquivo = blocoVazio;
                 this.nomePrimeiroArquivo = (byte) (int) Integer.valueOf(nome);
-                this.segurancaPrimeiroArquivo = (byte) 10000000;
+                this.segurancaPrimeiroArquivo = xSeguranca;
                 terminei = true;
             } else {
                 if (this.blocoSegundoArquivo == 0) {
                     this.blocoSegundoArquivo = blocoVazio;
                     this.nomeSegundoArquivo = (byte) (int) Integer.valueOf(nome);
-                    this.segurancaSegundoArquivo = (byte) 10000000;
+                    this.segurancaSegundoArquivo = xSeguranca;
                     terminei = true;
                 } else {
                     if (this.blocoTerceiroArquivo == 0) {
                         this.blocoTerceiroArquivo = blocoVazio;
                         this.nomeTerceiroArquivo = (byte) (int) Integer.valueOf(nome);
-                        this.segurancaTerceiroArquivo = (byte) 10000000;
+                        this.segurancaTerceiroArquivo = xSeguranca;
                         terminei = true;
                     } 
                 }
@@ -570,27 +556,27 @@ public class Pasta {
 
     }
 
-    void apagaArquivo(String splitado) throws IOException {
+    public void apagaArquivo(String splitado) throws IOException {
         boolean terminei = false;
-
+        byte xSeguranca = (byte) seguranca( this.ARQUIVO , 700);
         int pasta = (int) Integer.valueOf(splitado);
         byte p = (byte) pasta;
-        if (p == getNomePrimeiroArquivo() && getTipoArquivo(getSegurancaPrimeiroArquivo()) == 1) {
+        if (p == getNomePrimeiroArquivo() && getTipoArquivo(getSegurancaPrimeiroArquivo()) == this.ARQUIVO) {
             this.blocoPrimeiroArquivo = 0;
             this.nomePrimeiroArquivo = 0;
-            this.segurancaPrimeiroArquivo = (byte) 10000000;
+            this.segurancaPrimeiroArquivo = xSeguranca;
             terminei = true;
         }
-        if (p == getNomeSegundoArquivo() && getTipoArquivo(getSegurancaSegundoArquivo()) == 1) {
+        if (p == getNomeSegundoArquivo() && getTipoArquivo(getSegurancaSegundoArquivo()) == this.ARQUIVO) {
             this.blocoSegundoArquivo = 0;
             this.nomeSegundoArquivo = 0;
-            this.segurancaSegundoArquivo = (byte) 10000000;
+            this.segurancaSegundoArquivo = xSeguranca;
             terminei = true;
         }
-        if (p == getNomeTerceiroArquivo() && getTipoArquivo(getSegurancaTerceiroArquivo()) == 1) {
+        if (p == getNomeTerceiroArquivo() && getTipoArquivo(getSegurancaTerceiroArquivo()) == this.ARQUIVO) {
             this.blocoTerceiroArquivo = 0;
             this.nomeTerceiroArquivo = 0;
-            this.segurancaTerceiroArquivo = (byte) 10000000;
+            this.segurancaTerceiroArquivo = xSeguranca;
             terminei = true;
         }
         
@@ -602,22 +588,22 @@ public class Pasta {
         while (this.proxBloco != 0) {
             leMaisBlocoDaPasta();
 
-            if (p == getNomePrimeiroArquivo() && getTipoArquivo(getSegurancaPrimeiroArquivo()) == 1) {
+            if (p == getNomePrimeiroArquivo() && getTipoArquivo(getSegurancaPrimeiroArquivo()) == this.ARQUIVO) {
             this.blocoPrimeiroArquivo = 0;
             this.nomePrimeiroArquivo = 0;
-            this.segurancaPrimeiroArquivo = (byte) 10000000;
+            this.segurancaPrimeiroArquivo = xSeguranca;
             terminei = true;
         }
-        if (p == getNomeSegundoArquivo() && getTipoArquivo(getSegurancaSegundoArquivo()) == 1) {
+        if (p == getNomeSegundoArquivo() && getTipoArquivo(getSegurancaSegundoArquivo()) == this.ARQUIVO) {
             this.blocoSegundoArquivo = 0;
             this.nomeSegundoArquivo = 0;
-            this.segurancaSegundoArquivo = (byte) 10000000;
+            this.segurancaSegundoArquivo = xSeguranca;
             terminei = true;
         }
-        if (p == getNomeTerceiroArquivo() && getTipoArquivo(getSegurancaTerceiroArquivo()) == 1) {
+        if (p == getNomeTerceiroArquivo() && getTipoArquivo(getSegurancaTerceiroArquivo()) == this.ARQUIVO) {
             this.blocoTerceiroArquivo = 0;
             this.nomeTerceiroArquivo = 0;
-            this.segurancaTerceiroArquivo = (byte) 10000000;
+            this.segurancaTerceiroArquivo = xSeguranca;
             terminei = true;
         }
             if (terminei) {
@@ -627,6 +613,15 @@ public class Pasta {
         }
         System.out.println("Incrivel nao achei esta pasta");
         return;
+    }
+
+    public byte getSeguranca(String caminho) {
+    
+        
+        
+        
+        
+        return 1;
     }
 
 }

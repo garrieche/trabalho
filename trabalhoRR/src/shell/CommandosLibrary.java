@@ -2,6 +2,7 @@ package shell;
 
 import GU.GU;
 import hd.BetitanderFileSystem;
+import hd.OperacaoSeguranca;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +29,12 @@ public class CommandosLibrary {
                 retorno = "Formatação Realizada.";
                 break;
             case "mostraHD":
+                
                 SO.MostraHD();
                 break;
             case "md":
                 if (comando.length > 1)
+                    
                     makeDirectory( comando[1]);
                 else retorno = "Parametros Faltantes ou Inexistentes.";
                 break;
