@@ -32,6 +32,5 @@ public class teste {
             System.out.println("Pode Apagar !!! "); else System.out.println("nao apagar");
         if (discoC.getSegurança("/5", OperacaoSeguranca.EXECUTAR)) 
             System.out.println("Pode Executar !!! "); else System.out.println("nao executar");
-    }
-   
+    }  
 }

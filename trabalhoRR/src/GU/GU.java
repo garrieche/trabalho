@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -158,6 +157,7 @@ public class GU {
                 writer.append("\n");
             }
         }
+            writer.append("-1");
             writer.flush();
 	    writer.close();
 	}

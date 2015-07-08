@@ -7,107 +7,163 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class CommandosLibrary {
-    private String dirAtual; 
-    private BetitanderFileSystem SO;  
+
+    private String dirAtual;
+    private BetitanderFileSystem SO;
     private GU gu;
 
     public CommandosLibrary(GU gu) throws IOException {
         this.gu = gu;
-        this.SO = new BetitanderFileSystem( gu );
+        this.SO = new BetitanderFileSystem(gu);
         this.dirAtual = "/";
     }
-    
+
     public void command(String cmd) throws IOException {
         String[] comando = formataCMD(cmd);
-        String retorno="";
-                
+        String retorno = "";
+
         switch (comando[0]) {
             case "format":
-                SO.formatar();
-                retorno = "Formatação Realizada.";
+                if (gu.getLogado().getNome() == 0) {
+                    SO.formatar();
+                    retorno = "Formatação Realizada.";
+                } else {
+                    retorno = "formatação nao pode ser realizada!";
+                }
                 break;
             case "mostraHD":
-                
+
                 SO.MostraHD();
                 break;
             case "md":
-                if (comando.length > 1)
-                    
-                    makeDirectory( comando[1]);
-                else retorno = "Parametros Faltantes ou Inexistentes.";
+                if (comando.length > 1) {
+                    String pastaAnterior = "";
+                    String splitado[] = comando[1].split("/");
+                    for (int i = 1; i < splitado.length - 1; i++) {
+                        pastaAnterior += ("/" + splitado[i]);
+                    }
+
+                    if (SO.getSegurança(pastaAnterior, OperacaoSeguranca.ESCREVER)) {
+                        makeDirectory(comando[1]);
+                    } else {
+                        retorno = "sem permissão!";
+                    }
+                } else {
+                    retorno = "Parametros Faltantes ou Inexistentes.";
+                }
                 break;
             case "ld":
-                if (comando.length > 1)
-                    listDirectory( comando[1]);
-                else listDirectory(getPathAtual());
+                if (comando.length > 1) {
+                    if (SO.getSegurança(comando[1], OperacaoSeguranca.LER)) {
+                        listDirectory(comando[1]);
+                    } else {
+                        retorno = "sem permissão!";
+                    }
+                } else {
+                    listDirectory(getPathAtual());
+                }
                 break;
             case "rd":
-                if (comando.length > 1)
-                   if ( SO.getSegurança(cmd, OperacaoSeguranca.APAGAR))
-                        removeDirectory( comando[1]);
-                   else System.out.println("Sem permissão de usuario para operacao.");
-                else retorno = "Parametros Faltantes ou Inexistentes.";
+                if (comando.length > 1) {
+                    if (SO.getSegurança(comando[1], OperacaoSeguranca.APAGAR)) {
+                        removeDirectory(comando[1]);
+                    } else {
+                        System.out.println("Sem permissão de usuario para operacao.");
+                    }
+                } else {
+                    retorno = "Parametros Faltantes ou Inexistentes.";
+                }
                 break;
             case "ma":
-                if (comando.length > 2)
-                    makeArchive( comando[1] , comando[2]);
-                else retorno = "Parametros Faltantes ou Inexistentes.";
+                if (comando.length > 2) {
+                    if (SO.getSegurança(comando[1], OperacaoSeguranca.CRIAR)) {
+                        makeArchive(comando[1], comando[2]);
+                    } else {
+                        System.out.println("Sem permissão de usuario para operacao.");
+                    }
+                } else {
+                    retorno = "Parametros Faltantes ou Inexistentes.";
+                }
                 break;
             case "ra":
-                if (comando.length > 1)
-                    removeArchive( comando[1]);
-                else retorno = "Parametros Faltantes ou Inexistentes.";
+                if (comando.length > 1) {
+                    if (SO.getSegurança(comando[1], OperacaoSeguranca.APAGAR)) {
+                        removeArchive(comando[1]);
+                    } else {
+                        System.out.println("Sem permissão de usuario para operacao.");
+                    }                    
+                    
+                } else {
+                    retorno = "Parametros Faltantes ou Inexistentes.";
+                }
                 break;
             case "ca":
-                if (comando.length > 2)
-                    copyArchive( comando[1], comando[2]);
-                else retorno = "Parametros Faltantes ou Inexistentes.";
+                if (comando.length > 2) {
+                    if ((SO.getSegurança(comando[1], OperacaoSeguranca.LER))&&(SO.getSegurança(comando[2], OperacaoSeguranca.ESCREVER))) {
+                        copyArchive(comando[1], comando[2]);
+                    } else {
+                        System.out.println("Sem permissão de usuario para operacao.");
+                    }                    
+                } else {
+                    retorno = "Parametros Faltantes ou Inexistentes.";
+                }
                 break;
             case "xa":
-                if (comando.length > 2) 
-                    moveArchive(comando[1], comando[2]);
-                else retorno = "Parametros Faltantes ou Inexistentes.";
+                if (comando.length > 2) {
+                    if ((SO.getSegurança(comando[1], OperacaoSeguranca.APAGAR))&&(SO.getSegurança(comando[2], OperacaoSeguranca.ESCREVER))) {
+                        moveArchive(comando[1], comando[2]);
+                    } else {
+                        System.out.println("Sem permissão de usuario para operacao.");
+                    }                    
+                } else {
+                    retorno = "Parametros Faltantes ou Inexistentes.";
+                }
                 break;
-                /*
-                cu A (apenas root)
-                cria o usuário A
+            /*
+             cu A (apenas root)
+             cria o usuário A
 
-                ru A (apenas root)
-                apaga o usuário A
+             ru A (apenas root)
+             apaga o usuário A
 
-                gu A +B (apenas root)
-                associa o usuário A ao grupo B
+             gu A +B (apenas root)
+             associa o usuário A ao grupo B
 
-                gu A -B (apenas root)
-                desassocia o usuário A ao grupo B
+             gu A -B (apenas root)
+             desassocia o usuário A ao grupo B
                 
-                */
+             */
             case "cu":
-                if (gu.getLogado().getNome() == 0 ) {
-                if (comando.length == 2) 
-                    gu.addUser(comando[1]);
-                else retorno = "Parametros Faltantes ou Inexistentes.";
-                break;
+                if (gu.getLogado().getNome() == 0) {
+                    if (comando.length == 2) {
+                        gu.addUser(comando[1]);
+                    } else {
+                        retorno = "Parametros Faltantes ou Inexistentes.";
+                    }
+                    break;
                 } else {
                     System.out.println("você nao tem permissão!");
                 }
             case "ru":
-                if (gu.getLogado().getNome() == 0 ) {
-                if (comando.length == 2) 
-                    gu.delUser(comando[1]);
-                else retorno = "Parametros Faltantes ou Inexistentes.";
-                break;
+                if (gu.getLogado().getNome() == 0) {
+                    if (comando.length == 2) {
+                        gu.delUser(comando[1]);
+                    } else {
+                        retorno = "Parametros Faltantes ou Inexistentes.";
+                    }
+                    break;
                 } else {
                     System.out.println("você nao tem permissão!");
                 }
             case "gu":
-                if (gu.getLogado().getNome() == 0 ) {
-                if (comando.length == 3) 
-                    gu.alteraGrupo(comando[1], comando[2]);
-                else retorno = "Parametros Faltantes ou Inexistentes.";
-                break;
+                if (gu.getLogado().getNome() == 0) {
+                    if (comando.length == 3) {
+                        gu.alteraGrupo(comando[1], comando[2]);
+                    } else {
+                        retorno = "Parametros Faltantes ou Inexistentes.";
+                    }
+                    break;
                 } else {
                     System.out.println("você nao tem permissão!");
                 }
@@ -141,30 +197,33 @@ public class CommandosLibrary {
                         + "Usage xa [caminho/nomeArqOrig] [caminhoDestino]\n"
                         + "Exemplo: xa /1/2 /3\n");
                 break;
-        }    
-        if (!retorno.isEmpty())
+        }
+        if (!retorno.isEmpty()) {
             System.out.println(retorno);
-        
+        }
+
     }
-    
+
     public String getPathAtual() {
         return this.dirAtual;
     }
-    
-    private static String[] formataCMD( String cmd  ) {
-        cmd = cmd.trim(); 
+
+    private static String[] formataCMD(String cmd) {
+        cmd = cmd.trim();
         String splitado[] = cmd.split(" ");
         List comando = new ArrayList();
         for (String splitado1 : splitado) {
-             if (!splitado1.isEmpty()) comando.add(splitado1);
+            if (!splitado1.isEmpty()) {
+                comando.add(splitado1);
+            }
         }
-        return (String[]) comando.toArray (new String[comando.size()]); 
+        return (String[]) comando.toArray(new String[comando.size()]);
     }
 
     private void makeDirectory(String comando) throws IOException {
-        
+
         SO.criaPasta(comando);
-        
+
     }
 
     private void listDirectory(String comando) throws IOException {
@@ -179,25 +238,26 @@ public class CommandosLibrary {
         System.out.println("Wait Loading data..");
         if (SO.criaArquivo(pathBetitander, pathNatural)) {
             System.out.println("1 file(s) Copied sucessfull.");
-        }else
+        } else {
             System.out.println("Copy failed.");
-        
+        }
+
     }
 
     private void removeArchive(String comando) throws IOException {
         SO.apagaArquivo(comando);
     }
-    
+
     private void copyArchive(String comando, String comando0) throws IOException {
-        SO.copiaArquivo(comando, comando0);    
-    
+        SO.copiaArquivo(comando, comando0);
+
     }
 
     private void moveArchive(String comando, String comando0) throws IOException {
         SO.moveArquivo(comando, comando0);
     }
-    
+
     private void executaArquivo(String comando) throws IOException {
         SO.executaArquivo(comando);
     }
-}            
+}

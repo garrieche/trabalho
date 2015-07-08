@@ -8,7 +8,7 @@ public class Shell {
 
     public static void main(String args[]) throws IOException {
         GU gu = new GU();
-        CommandosLibrary interpretador = new CommandosLibrary(gu);
+        CommandosLibrary interpretador;
 
         Scanner sc = new Scanner(System.in);
         String cmd = "";
@@ -26,7 +26,7 @@ public class Shell {
                 System.out.println("Não foi possivel efetuar logon, tente novamente");
             }
         }
-
+        interpretador = new CommandosLibrary(gu);
         System.out.println("");
         System.out.print(interpretador.getPathAtual() + " " + "Type your command:");
         //   int i = 0;
@@ -49,6 +49,7 @@ public class Shell {
                     usuario = Integer.valueOf(cmd);
                     if (gu.podeLogar(usuario)) {
                         System.out.println("Usuario Logado -> " + gu.getLogado().getNome());
+                        System.out.print(interpretador.getPathAtual() + " " + "Type your command:");
                     } else {
                         System.out.println("Não foi possivel efetuar logon, tente novamente");
                     }
