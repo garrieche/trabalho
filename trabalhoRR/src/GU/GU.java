@@ -55,7 +55,7 @@ public class GU {
         return logado;
     }
 
-    private Usuario getPorNome(int nome) {
+    public Usuario getPorNome(int nome) {
         for (Usuario usuario : usuarios) {
             if (usuario.getNome() == nome) {
                 return usuario;
@@ -126,17 +126,20 @@ public class GU {
         int grupo = Integer.valueOf(comando0);
         if (grupo > 0 ){
             //associa
-           if( user.getGrupos().contains(nome) ){
-               System.out.println("Usuario já esta no grupo "+nome);
+           if( user.getGrupos().contains(grupo) ){
+               System.out.println("Usuario já esta no grupo "+grupo);
            }else {
-               user.getGrupos().add(nome);
+               user.getGrupos().add(grupo);
+               this.salvaCSV();
            }
         }else {
             //desassocia
-           if( user.getGrupos().contains(nome) ){
-               user.getGrupos().remove(nome);
+            Integer grupoRem = grupo*-1;
+           if( user.getGrupos().contains(grupoRem) ){
+               user.getGrupos().remove(grupoRem);
+               this.salvaCSV();
            }else {
-               System.out.println("Usuario não esta no grupo "+nome);
+               System.out.println("Usuario não esta no grupo "+grupo);
            } 
         }
         

@@ -43,8 +43,9 @@ public class CommandosLibrary {
                     for (int i = 1; i < splitado.length - 1; i++) {
                         pastaAnterior += ("/" + splitado[i]);
                     }
-
-                    if (SO.getSegurança(pastaAnterior, OperacaoSeguranca.ESCREVER)) {
+                    if (pastaAnterior == "") pastaAnterior = "/";
+                    
+                    if ((pastaAnterior == "/")||SO.getSegurança(pastaAnterior, OperacaoSeguranca.ESCREVER)) {
                         makeDirectory(comando[1]);
                     } else {
                         retorno = "sem permissão!";
@@ -55,7 +56,8 @@ public class CommandosLibrary {
                 break;
             case "ld":
                 if (comando.length > 1) {
-                    if (SO.getSegurança(comando[1], OperacaoSeguranca.LER)) {
+
+                    if (("/".equals(comando[1]))||SO.getSegurança(comando[1], OperacaoSeguranca.LER)) {
                         listDirectory(comando[1]);
                     } else {
                         retorno = "sem permissão!";
@@ -66,7 +68,7 @@ public class CommandosLibrary {
                 break;
             case "rd":
                 if (comando.length > 1) {
-                    if (SO.getSegurança(comando[1], OperacaoSeguranca.APAGAR)) {
+                    if (("/".equals(comando[1]))||(SO.getSegurança(comando[1], OperacaoSeguranca.APAGAR))) {
                         removeDirectory(comando[1]);
                     } else {
                         System.out.println("Sem permissão de usuario para operacao.");
@@ -77,7 +79,14 @@ public class CommandosLibrary {
                 break;
             case "ma":
                 if (comando.length > 2) {
-                    if (SO.getSegurança(comando[1], OperacaoSeguranca.CRIAR)) {
+                    String pastaAnterior = "";
+                    String splitado[] = comando[2].split("/");
+                    for (int i = 1; i < splitado.length - 1; i++) {
+                        pastaAnterior += ("/" + splitado[i]);
+                    }
+                    if ("".equals(pastaAnterior)) pastaAnterior = "/";
+                    
+                    if (("/".equals(pastaAnterior))||SO.getSegurança(pastaAnterior, OperacaoSeguranca.CRIAR)||(gu.getLogado().getNome() == 0)) {
                         makeArchive(comando[1], comando[2]);
                     } else {
                         System.out.println("Sem permissão de usuario para operacao.");
@@ -87,53 +96,39 @@ public class CommandosLibrary {
                 }
                 break;
             case "ra":
-                if (comando.length > 1) {
-                    if (SO.getSegurança(comando[1], OperacaoSeguranca.APAGAR)) {
+                if ((comando.length > 1)) {
+                    if (("/".equals(comando[1]))||(SO.getSegurança(comando[1], OperacaoSeguranca.APAGAR))) {
                         removeArchive(comando[1]);
                     } else {
                         System.out.println("Sem permissão de usuario para operacao.");
-                    }                    
-                    
+                    }
+
                 } else {
                     retorno = "Parametros Faltantes ou Inexistentes.";
                 }
                 break;
             case "ca":
                 if (comando.length > 2) {
-                    if ((SO.getSegurança(comando[1], OperacaoSeguranca.LER))&&(SO.getSegurança(comando[2], OperacaoSeguranca.ESCREVER))) {
+                    if ((("/".equals(comando[1]))||(SO.getSegurança(comando[1], OperacaoSeguranca.LER))) && (SO.getSegurança(comando[2], OperacaoSeguranca.ESCREVER))) {
                         copyArchive(comando[1], comando[2]);
                     } else {
                         System.out.println("Sem permissão de usuario para operacao.");
-                    }                    
+                    }
                 } else {
                     retorno = "Parametros Faltantes ou Inexistentes.";
                 }
                 break;
             case "xa":
                 if (comando.length > 2) {
-                    if ((SO.getSegurança(comando[1], OperacaoSeguranca.APAGAR))&&(SO.getSegurança(comando[2], OperacaoSeguranca.ESCREVER))) {
+                    if ((("/".equals(comando[1]))||(SO.getSegurança(comando[1], OperacaoSeguranca.APAGAR))) && (SO.getSegurança(comando[2], OperacaoSeguranca.ESCREVER))) {
                         moveArchive(comando[1], comando[2]);
                     } else {
                         System.out.println("Sem permissão de usuario para operacao.");
-                    }                    
+                    }
                 } else {
                     retorno = "Parametros Faltantes ou Inexistentes.";
                 }
                 break;
-            /*
-             cu A (apenas root)
-             cria o usuário A
-
-             ru A (apenas root)
-             apaga o usuário A
-
-             gu A +B (apenas root)
-             associa o usuário A ao grupo B
-
-             gu A -B (apenas root)
-             desassocia o usuário A ao grupo B
-                
-             */
             case "cu":
                 if (gu.getLogado().getNome() == 0) {
                     if (comando.length == 2) {
@@ -163,15 +158,50 @@ public class CommandosLibrary {
                     } else {
                         retorno = "Parametros Faltantes ou Inexistentes.";
                     }
-                    break;
                 } else {
                     System.out.println("você nao tem permissão!");
                 }
+                break;
+            case "ldgu":
+                int tmp = Integer.valueOf(comando[1]);
+                ArrayList<Integer> grupos = gu.getPorNome(tmp).getGrupos();
+                for (Integer grupo : grupos) {
+                    System.out.println("Grupo -> " + grupo);
+                }
+                break;
+            case "pa":
+                if (comando.length > 2) {
+                    if ((SO.getSegurança(comando[1], OperacaoSeguranca.APAGAR)) && (SO.getSegurança(comando[2], OperacaoSeguranca.ESCREVER))) {
+                        alteraPermissao(comando[1], comando[2]);
+                    } else {
+                        System.out.println("Sem permissão de usuario para operacao.");
+                    }
+                } else {
+                    retorno = "Parametros Faltantes ou Inexistentes.";
+                }
+                    //pa /A/B CD
+                    //altera para CD (octal) as permissões do arquivo B da pasta A filha da pasta raiz
+                    //pa /5 64
+                break;
+            case "run" :
+                if (comando.length > 1) {
+                    if ((SO.getSegurança(comando[1], OperacaoSeguranca.EXECUTAR))) {
+                        this.executaArquivo(comando[1]);        
+                    } else {
+                        System.out.println("Sem permissão de usuario para operacao.");
+                    }
+                } else {
+                    retorno = "Parametros Faltantes ou Inexistentes.";
+                }
+                break;
+
             case "logout":
                 gu.logout();
             default:
-                System.out.println("comando Invalido!");
-                System.out.println("comandos disponiveis: \n"
+                System.out.println(
+                        "comando Invalido!");
+                System.out.println(
+                        "comandos disponiveis: \n"
                         + "===============================================\n"
                         + "md - MakeDirectory - Cria uma pasta\n"
                         + "Usage md [nomePasta] Exemplo: md /2\n"
@@ -196,6 +226,7 @@ public class CommandosLibrary {
                         + "xa - move Archive - Move Arquivo\n"
                         + "Usage xa [caminho/nomeArqOrig] [caminhoDestino]\n"
                         + "Exemplo: xa /1/2 /3\n");
+
                 break;
         }
         if (!retorno.isEmpty()) {
@@ -259,5 +290,13 @@ public class CommandosLibrary {
 
     private void executaArquivo(String comando) throws IOException {
         SO.executaArquivo(comando);
+    }
+
+    private void alteraPermissao(String comando, String comando0) throws IOException {
+        SO.setSegurança(comando, comando0);
+    }
+
+    void setUser(int nome) {
+        SO.setUser(nome);
     }
 }

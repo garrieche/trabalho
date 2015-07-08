@@ -123,6 +123,7 @@ public class Pasta {
                         this.blocoTerceiroArquivo = blocoVazio;
                         this.nomeTerceiroArquivo = (byte) (int) Integer.valueOf(nome);
                         this.segurancaTerceiroArquivo = xSeguranca;
+                        this.nomeDonoTerceiroArquivo = 
                         terminei = true;
                     } else {
 //                        if (this.blocoQuartoArquivo == 0) {
@@ -314,7 +315,7 @@ public class Pasta {
         //if (this.existeSubPasta(splitado)) {
         //se sim, existe apaga
         boolean terminei = false;
-        byte xSeguranca = (byte) seguranca( this.ARQUIVO , 700);
+        byte xSeguranca = (byte) seguranca( this.ARQUIVO , 70);
         int pasta = (int) Integer.valueOf(splitado);
         byte p = (byte) pasta;
         if (p == getNomePrimeiroArquivo() && getTipoArquivo(getSegurancaPrimeiroArquivo()) == this.PASTA) {
@@ -421,7 +422,7 @@ public class Pasta {
                 diretorios++;
                 pasta = "/";
             }else arquivos++;
-            System.out.print(pasta + this.nomeSegundoArquivo 
+            System.out.println(pasta + this.nomeSegundoArquivo 
                     + "          " + this.segurancaFormatada(segurancaSegundoArquivo) 
                     + "          " + this.nomeDonoSegundoArquivo
                     + "          " + xBinario( (char) this.segurancaSegundoArquivo));
@@ -432,7 +433,7 @@ public class Pasta {
                 diretorios++;
                 pasta = "/";
             }else arquivos++;
-            System.out.print(pasta + this.nomeTerceiroArquivo  
+            System.out.println(pasta + this.nomeTerceiroArquivo  
                     + "          " + this.segurancaFormatada(segurancaTerceiroArquivo)
                     + "          " + this.nomeDonoTerceiroArquivo
                     + "          " + xBinario( (char) this.segurancaTerceiroArquivo));
@@ -446,10 +447,10 @@ public class Pasta {
                 diretorios++;
                 pasta = "/";
             }else arquivos++;
-                System.out.print(pasta + this.nomePrimeiroArquivo 
-                        + "         " + this.segurancaFormatada(segurancaPrimeiroArquivo)
-                        + "         " + this.nomeDonoPrimeiroArquivo
-                        + "         " + xBinario( (char) this.segurancaPrimeiroArquivo));
+                System.out.println(pasta + this.nomePrimeiroArquivo 
+                        + "          " + this.segurancaFormatada(segurancaPrimeiroArquivo)
+                        + "          " + this.nomeDonoPrimeiroArquivo
+                        + "          " + xBinario( (char) this.segurancaPrimeiroArquivo));
             }
             if (getNomeSegundoArquivo() > 0) {
                 String pasta = "";
@@ -457,7 +458,7 @@ public class Pasta {
                     diretorios++;
                     pasta = "/";
                 }else arquivos++;
-                System.out.print(pasta + this.nomeSegundoArquivo 
+                System.out.println(pasta + this.nomeSegundoArquivo 
                         + "          " + this.segurancaFormatada(segurancaSegundoArquivo)
                         + "          " + this.nomeDonoSegundoArquivo
                         + "          " + xBinario( (char) this.segurancaSegundoArquivo));
@@ -468,7 +469,7 @@ public class Pasta {
                     diretorios++;
                     pasta = "/";
                 }else arquivos++;
-                System.out.print(pasta + this.nomeTerceiroArquivo 
+                System.out.println(pasta + this.nomeTerceiroArquivo 
                         + "          " + this.segurancaFormatada(segurancaTerceiroArquivo)
                         + "          " + this.nomeDonoTerceiroArquivo
                         + "          " + xBinario( (char) this.segurancaTerceiroArquivo));
@@ -640,6 +641,48 @@ public class Pasta {
             }
 
     return 0;
+    }
+    
+    public boolean setSeguranca(String tempPath, byte segurancaNova) throws IOException {
+
+        int pasta = (int) Integer.valueOf(tempPath);
+        byte nomeArq = (byte) pasta;
+        if (nomeArq == getNomePrimeiroArquivo())  {
+            this.segurancaPrimeiroArquivo = segurancaNova;
+            this.atualizaBytesDaPasta();
+            return true;
+        }
+        if (nomeArq == getNomeSegundoArquivo()){
+            this.segurancaSegundoArquivo = segurancaNova;
+            this.atualizaBytesDaPasta();
+            return true;
+        }
+        if (nomeArq == getNomeTerceiroArquivo()) {
+            this.segurancaTerceiroArquivo = segurancaNova;
+            this.atualizaBytesDaPasta();
+            return true;
+        }
+
+        while (this.proxBloco != 0) {
+            leMaisBlocoDaPasta();
+            if (nomeArq == getNomePrimeiroArquivo())  {
+                this.segurancaPrimeiroArquivo = segurancaNova;
+                this.atualizaBytesDaPasta();
+                return true;
+            }
+            if (nomeArq == getNomeSegundoArquivo()){
+                this.segurancaSegundoArquivo = segurancaNova;
+                this.atualizaBytesDaPasta();
+                return true;
+            }
+            if (nomeArq == getNomeTerceiroArquivo()) {
+                this.segurancaTerceiroArquivo = segurancaNova;
+                this.atualizaBytesDaPasta();
+                return true;
+            }
+
+        }
+        return false;
     }
     
     public int getNomeDonoArquivo( String nome) throws IOException {

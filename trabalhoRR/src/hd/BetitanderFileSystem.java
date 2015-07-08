@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import roundrobin.Processador_RoundRobin;
 
 public class BetitanderFileSystem {
 
@@ -37,10 +38,22 @@ public class BetitanderFileSystem {
         if (address == 0) {
             return false;
         }
+        //instanciar pasta anterior
+        String pastaAnterior = "";
+        String splitado[] = caminho.split("/");
+        for (int i = 1; i < splitado.length - 1; i++) {
+            pastaAnterior += ("/" + splitado[i]);
+        }
+        if (pastaAnterior == "") {
+            pastaAnterior = "/";
+        }
+        address = this.exist(pastaAnterior);
+
         Pasta localFolder = new Pasta(this.hd, address);
         byte xSeguranca = localFolder.getSeguranca(this.getNomeEntidade(caminho));
+//        System.out.println(xBinario((char) xSeguranca));
         int xDonoArquivo = localFolder.getNomeDonoArquivo(this.getNomeEntidade(caminho));
-        
+
         // Se for o dono do arquivo ou ROOT nem pede segurança.. libera tudo...
         // =================================================================================
         if (gu.getLogado().getNome() == xDonoArquivo || gu.getLogado().getNome() == 0) {
@@ -59,43 +72,82 @@ public class BetitanderFileSystem {
                 case LER:
                     key = Seguranca.READ;
                     return (modeSecurity == 1)
-                            ? (pegabit((char) xSeguranca, (char) 1) == 1)
-                            : (pegabit((char) xSeguranca, (char) 4) == 1);
+                            ? (xpegabit((char) xSeguranca, (char) 1) == 1)
+                            : (xpegabit((char) xSeguranca, (char) 4) == 1);
 
                 case LISTAR:
                     key = Seguranca.READ;
                     return (modeSecurity == 1)
-                            ? (pegabit((char) xSeguranca, (char) 1) == 1)
-                            : (pegabit((char) xSeguranca, (char) 4) == 1);
+                            ? (xpegabit((char) xSeguranca, (char) 1) == 1)
+                            : (xpegabit((char) xSeguranca, (char) 4) == 1);
 
                 case ESCREVER:
                     key = Seguranca.WRITE;
                     return (modeSecurity == 1)
-                            ? (pegabit((char) xSeguranca, (char) 2) == 1)
-                            : (pegabit((char) xSeguranca, (char) 5) == 1);
+                            ? (xpegabit((char) xSeguranca, (char) 2) == 1)
+                            : (xpegabit((char) xSeguranca, (char) 5) == 1);
+                case ALTERAR:
+                    key = Seguranca.WRITE;
+                    return (modeSecurity == 1)
+                            ? (xpegabit((char) xSeguranca, (char) 2) == 1)
+                            : (xpegabit((char) xSeguranca, (char) 5) == 1);
                 case ALTERA_SEGURANCA:
                     key = Seguranca.WRITE;
                     return (modeSecurity == 1)
-                            ? (pegabit((char) xSeguranca, (char) 2) == 1)
-                            : (pegabit((char) xSeguranca, (char) 5) == 1);
+                            ? (xpegabit((char) xSeguranca, (char) 2) == 1)
+                            : (xpegabit((char) xSeguranca, (char) 5) == 1);
                 case CRIAR:
                     key = Seguranca.WRITE;
                     return (modeSecurity == 1)
-                            ? (pegabit((char) xSeguranca, (char) 2) == 1)
-                            : (pegabit((char) xSeguranca, (char) 5) == 1);
+                            ? (xpegabit((char) xSeguranca, (char) 2) == 1)
+                            : (xpegabit((char) xSeguranca, (char) 5) == 1);
                 case APAGAR:
                     key = Seguranca.WRITE;
                     return (modeSecurity == 1)
-                            ? (pegabit((char) xSeguranca, (char) 2) == 1)
-                            : (pegabit((char) xSeguranca, (char) 5) == 1);
+                            ? (xpegabit((char) xSeguranca, (char) 2) == 1)
+                            : (xpegabit((char) xSeguranca, (char) 5) == 1);
                 case EXECUTAR:
                     key = Seguranca.EXECUTE;
                     return (modeSecurity == 1)
-                            ? (pegabit((char) xSeguranca, (char) 3) == 1)
-                            : (pegabit((char) xSeguranca, (char) 6) == 1);
+                            ? (xpegabit((char) xSeguranca, (char) 3) == 1)
+                            : (xpegabit((char) xSeguranca, (char) 6) == 1);
             }
         }
         return false;
+    }
+
+    public void setSegurança(String caminho, String novaSeguranca) throws IOException {
+        if (caminho == null) {
+            System.out.println("Caminho Invalido");
+            return;
+        }
+        if (caminho.length() == 1 && caminho.charAt(0) != '/') {
+            System.out.println("Caminho Invalido");
+            return;
+        }
+        if (caminho.length() == 1 && caminho.charAt(0) == '/') {
+            System.out.println("Nao eh possivel alterar pásta raiz");
+            return;
+        }
+        String caminhoAnterior = "";
+        String splitado[] = caminho.split("/");
+        for (int i = 1; i < splitado.length - 1; i++) {
+            caminhoAnterior += ("/" + splitado[i]);
+        }
+        if (caminhoAnterior.equals("")) {
+            caminhoAnterior = "/";
+        }
+
+        short retCaminhoAnt = exist(caminhoAnterior);
+        Pasta paiPasta = new Pasta(hd, retCaminhoAnt);
+
+        byte segurancaOld = paiPasta.getSeguranca(splitado[splitado.length]);
+        int tmp = (byte) xpegabit((char) segurancaOld, (char) 0);
+        int tmp2 = Integer.valueOf(novaSeguranca);
+        paiPasta.setSeguranca(splitado[splitado.length], (byte) seguranca(tmp, tmp2));
+
+        //na pasta anterior ->
+        //folder[2] = (byte) seguranca(1, 64); 
     }
 
     public void formatar() throws IOException {
@@ -622,15 +674,15 @@ public class BetitanderFileSystem {
         }
     }
 
-    public byte[] executaArquivo(String comando) throws IOException {
+    public void executaArquivo(String comando) throws IOException {
         short blocoOrigem = exist(comando);
         String caminhoPasta = "";
         byte segCodigo[] = new byte[256];
         if (blocoOrigem == 0) {
             System.out.println("Arquivo ou Pasta Origem não encontrado.");
             segCodigo[0] = (byte) 15;
-            return (segCodigo);
-
+            //return (segCodigo);
+            return;
         } else {
             String splitado[] = comando.split("/");
             for (int i = 1; i < splitado.length - 1; i++) {
@@ -658,7 +710,10 @@ public class BetitanderFileSystem {
                 }
             }
         }
-        return segCodigo;
+        Processador_RoundRobin p = new Processador_RoundRobin();
+        p.Processador(segCodigo);
+
+        //return segCodigo;
     }
 
     private String getNomeEntidade(String caminho) throws IOException {
@@ -676,5 +731,9 @@ public class BetitanderFileSystem {
         //retorno = (byte) (int) Integer.valueOf(nomeArq);
 
         return nomeArq;
+    }
+
+    public void setUser(int nome) {
+        this.user = (byte) nome;
     }
 }
