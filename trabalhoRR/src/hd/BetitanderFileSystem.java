@@ -141,10 +141,10 @@ public class BetitanderFileSystem {
         short retCaminhoAnt = exist(caminhoAnterior);
         Pasta paiPasta = new Pasta(hd, retCaminhoAnt);
 
-        byte segurancaOld = paiPasta.getSeguranca(splitado[splitado.length]);
+        byte segurancaOld = paiPasta.getSeguranca(splitado[splitado.length - 1]);
         int tmp = (byte) xpegabit((char) segurancaOld, (char) 0);
         int tmp2 = Integer.valueOf(novaSeguranca);
-        paiPasta.setSeguranca(splitado[splitado.length], (byte) seguranca(tmp, tmp2));
+        paiPasta.setSeguranca(splitado[splitado.length - 1], (byte) seguranca(tmp, tmp2));
 
         //na pasta anterior ->
         //folder[2] = (byte) seguranca(1, 64); 
@@ -206,7 +206,7 @@ public class BetitanderFileSystem {
             Pasta pastaExistente = new Pasta(hd, exist(caminhoFinal));
             blocoVazio = getBlocoVazio();
             if (blocoVazio > 0) {
-                pastaExistente.gravaNovaPasta(blocoVazio, novaPasta, splitado[splitado.length - 1]);
+                pastaExistente.gravaNovaPasta(blocoVazio, novaPasta, splitado[splitado.length - 1], (byte) (int) gu.getLogado().getNome());
             } else {
                 System.out.println("Acabou o espaço em disco!!!! ");
                 return false;
@@ -215,7 +215,7 @@ public class BetitanderFileSystem {
         return true;
     }
 
-    public boolean criaArquivo(String caminho, String local) throws IOException {
+    public boolean criaArquivo(String local, String caminho) throws IOException {
         short blocoVazio;
         short blocoInicial;
         String caminhoFinal = "";
@@ -459,17 +459,25 @@ public class BetitanderFileSystem {
             retorno = pastaRaiz.getBlocoPasta(splitado[1]);
 
             while (x < splitado.length) {
+
                 if (umaPasta.existeSubPasta(splitado[x])) {
                     retorno = umaPasta.getBlocoPasta(splitado[x]);
                     umaPasta = new Pasta(hd, umaPasta.getBlocoPasta(splitado[x]));
-
                     x++;
                 } else {
-                    return 0;
+                    if (umaPasta.getFileCounter(splitado[x]) > 0) {
+                        return (short) umaPasta.getFileCounter(splitado[x]);
+                    } else {
+                        return 0;
+                    }
                 }
 
             }
 
+        } else {
+            if (pastaRaiz.getFileCounter(splitado[1]) > 0) {
+                return (short) pastaRaiz.getFileCounter(splitado[1]);
+            }
         }
         return retorno;
     }

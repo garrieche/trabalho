@@ -18,11 +18,11 @@ public class teste {
         GU gu = new GU();
         gu.podeLogar(2);
         BetitanderFileSystem discoC = new BetitanderFileSystem(gu);
-   //     discoC.formatar();
-   //     discoC.criaPasta("/1");
-   //     discoC.criaPasta("/5");
-       // discoC.mostraPasta("/");
-       // discoC.mostraPasta("/5");
+        discoC.formatar();
+        discoC.criaPasta("/1");
+        discoC.criaPasta("/5");
+        discoC.mostraPasta("/");
+       
         
         System.out.println("mostrando do dono");
         if (discoC.getSegurança("/5", OperacaoSeguranca.LER)) 

@@ -63,7 +63,7 @@ public class Bits {
     }
     //ardPasta se eh arquivo ou pasta      novaPermissao
     public static char seguranca( int arqPasta, int permissao) {
-        if( permissao <= 0 || permissao >=77){ 
+        if( permissao < 0 || permissao >77){ 
             System.out.println("Permissao invalida");
             return 0;
         }

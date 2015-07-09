@@ -171,7 +171,14 @@ public class CommandosLibrary {
                 break;
             case "pa":
                 if (comando.length > 2) {
-                    if ((SO.getSegurança(comando[1], OperacaoSeguranca.APAGAR)) && (SO.getSegurança(comando[2], OperacaoSeguranca.ESCREVER))) {
+                    String pastaAnterior = "";
+                    String splitado[] = comando[1].split("/");
+                    for (int i = 1; i < splitado.length - 1; i++) {
+                        pastaAnterior += ("/" + splitado[i]);
+                    }
+                    
+                    //
+                    if (SO.getSegurança(comando[1], OperacaoSeguranca.ESCREVER)||("/".equals(pastaAnterior))) {
                         alteraPermissao(comando[1], comando[2]);
                     } else {
                         System.out.println("Sem permissão de usuario para operacao.");

@@ -70,25 +70,28 @@ public class Pasta {
 
     }
 
-    public void gravaNovaPasta(short blocoVazio, byte[] novaPasta, String nome) throws FileNotFoundException, IOException {
+    public void gravaNovaPasta(short blocoVazio, byte[] novaPasta, String nome, byte dono) throws FileNotFoundException, IOException {
         boolean terminei = false;
         byte xSeguranca = (byte) seguranca( this.PASTA, 64);
         if (this.blocoPrimeiroArquivo == 0) {
             this.blocoPrimeiroArquivo = blocoVazio;
             this.nomePrimeiroArquivo = (byte) (int) Integer.valueOf(nome);
             this.segurancaPrimeiroArquivo = xSeguranca;
+            this.nomeDonoPrimeiroArquivo = dono;
             terminei = true;
         } else {
             if (this.blocoSegundoArquivo == 0) {
                 this.blocoSegundoArquivo = blocoVazio;
                 this.nomeSegundoArquivo = (byte) (int) Integer.valueOf(nome);
                 this.segurancaSegundoArquivo = xSeguranca;
+                this.nomeDonoSegundoArquivo = dono;
                 terminei = true;
             } else {
                 if (this.blocoTerceiroArquivo == 0) {
                     this.blocoTerceiroArquivo = blocoVazio;
                     this.nomeTerceiroArquivo = (byte) (int) Integer.valueOf(nome);
                     this.segurancaTerceiroArquivo = xSeguranca;
+                    this.nomeDonoTerceiroArquivo = dono;
                     terminei = true;
                 } else {
 //                    if (this.blocoQuartoArquivo == 0) {
@@ -111,19 +114,21 @@ public class Pasta {
                 this.blocoPrimeiroArquivo = blocoVazio;
                 this.nomePrimeiroArquivo = (byte) (int) Integer.valueOf(nome);
                 this.segurancaPrimeiroArquivo = xSeguranca;
+                this.nomeDonoPrimeiroArquivo = dono;
                 terminei = true;
             } else {
                 if (this.blocoSegundoArquivo == 0) {
                     this.blocoSegundoArquivo = blocoVazio;
                     this.nomeSegundoArquivo = (byte) (int) Integer.valueOf(nome);
                     this.segurancaSegundoArquivo = xSeguranca;
+                    this.nomeDonoSegundoArquivo = dono;
                     terminei = true;
                 } else {
                     if (this.blocoTerceiroArquivo == 0) {
                         this.blocoTerceiroArquivo = blocoVazio;
                         this.nomeTerceiroArquivo = (byte) (int) Integer.valueOf(nome);
                         this.segurancaTerceiroArquivo = xSeguranca;
-                        this.nomeDonoTerceiroArquivo = 
+                        this.nomeDonoTerceiroArquivo = dono;
                         terminei = true;
                     } else {
 //                        if (this.blocoQuartoArquivo == 0) {
@@ -407,7 +412,7 @@ public class Pasta {
         int diretorios = 0 ;
         if (getNomePrimeiroArquivo() > 0) {
             String pasta = "";
-            if (getTipoArquivo(this.segurancaPrimeiroArquivo) == this.PASTA) {
+            if (getTipoArquivo(this.segurancaPrimeiroArquivo) == this.PASTA)  {//é aki que nao conta arquivos
                 diretorios++;
                 pasta = "/";
             } else arquivos++;
@@ -488,7 +493,7 @@ public class Pasta {
     public void novoArquivo(short blocoVazio, String nome, byte usuario) throws IOException {
             // TODO  Implementar Segurança posteriormente.
             //       Preciso pegar o usuario para terminar este metodo.
-        byte xSeguranca = (byte) seguranca(1,700);
+        byte xSeguranca = (byte) seguranca(1,64);
         boolean terminei = false;
         if (this.blocoPrimeiroArquivo == 0) {
             this.blocoPrimeiroArquivo = blocoVazio;
@@ -552,7 +557,7 @@ public class Pasta {
 
     public void apagaArquivo(String splitado) throws IOException {
         boolean terminei = false;
-        byte xSeguranca = (byte) seguranca( this.ARQUIVO , 700);
+        byte xSeguranca = (byte) seguranca( this.ARQUIVO , 64);
         int pasta = (int) Integer.valueOf(splitado);
         byte p = (byte) pasta;
         if (p == getNomePrimeiroArquivo() && getTipoArquivo(getSegurancaPrimeiroArquivo()) == this.ARQUIVO) {
@@ -776,7 +781,8 @@ public class Pasta {
     }
 
     private static int getTipoArquivo(byte seguranca) {
-        return (int) pegabit((char) seguranca, (char) 1);
+        
+        return (int) xpegabit((char) seguranca, (char) 0);
     }
 
     private byte getSegurancaPrimeiroArquivo() {
@@ -809,6 +815,11 @@ public class Pasta {
         else permissoes = permissoes.concat("-");
         
         return permissoes;
+    }
+
+    public boolean existeArquivo(String splitado) {
+        
+        return false;
     }
 
 }
