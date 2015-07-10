@@ -464,21 +464,24 @@ public class BetitanderFileSystem {
                     retorno = umaPasta.getBlocoPasta(splitado[x]);
                     umaPasta = new Pasta(hd, umaPasta.getBlocoPasta(splitado[x]));
                     x++;
-                } else {
-                    if (umaPasta.getFileCounter(splitado[x]) > 0) {
-                        return (short) umaPasta.getFileCounter(splitado[x]);
-                    } else {
+                } 
+                
+//                else {
+//                    if (umaPasta.getFileCounter(splitado[x]) > 0) {
+//                        retorno = (short) umaPasta.getFileCounter(splitado[x]);
+                     else {
                         return 0;
                     }
-                }
+//                }
 
             }
 
-        } else {
-            if (pastaRaiz.getFileCounter(splitado[1]) > 0) {
-                return (short) pastaRaiz.getFileCounter(splitado[1]);
-            }
-        }
+        } 
+//        else {
+//            if (pastaRaiz.getFileCounter(splitado[1]) > 0) {
+//                retorno = (short) pastaRaiz.getFileCounter(splitado[1]);
+//            }
+//        }
         return retorno;
     }
 
